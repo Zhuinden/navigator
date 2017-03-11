@@ -46,13 +46,13 @@ public class BackstackHost
 
     StateChanger stateChanger = new StateChanger() {
         @Override
-        public void handleStateChange(StateChange stateChange, StateChanger.Callback completionCallback) {
+        public void handleStateChange(final StateChange stateChange, final StateChanger.Callback completionCallback) {
             if(stateChange.topNewState().equals(stateChange.topPreviousState())) {
                 completionCallback.stateChangeComplete();
                 return;
             }
             StateKey previousKey = stateChange.topPreviousState();
-            View previousView = container.getChildAt(0);
+            final View previousView = container.getChildAt(0);
             backstackManager.persistViewToState(previousView);
             ViewController previousController;
             if(previousView != null && previousKey != null) {
@@ -63,11 +63,11 @@ public class BackstackHost
                 }
                 previousController.detach(previousView);
             }
-            container.removeView(previousView);
+
             StateKey newKey = stateChange.topNewState();
             ViewController newController = newKey.createViewController();
             Context newContext = stateChange.createContext(getActivity(), newKey);
-            View newView = LayoutInflater.from(newContext).inflate(newKey.layout(), container, false);
+            final View newView = LayoutInflater.from(newContext).inflate(newKey.layout(), container, false);
             backstackManager.restoreViewFromState(newView);
             ViewController.bind(newController, newView);
             if(newController instanceof Bundleable) {
@@ -75,6 +75,38 @@ public class BackstackHost
             }
             container.addView(newView);
             newController.attach(newView);
+
+            if(previousView == null) {
+                finishStateChange(completionCallback);
+                return;
+            } else {
+                final AnimationHandler animationHandler;
+                if(stateChange.getDirection() == StateChange.FORWARD) {
+                    animationHandler = newKey.getAnimationHandler();
+                } else if(previousKey != null && stateChange.getDirection() == StateChange.BACKWARD) {
+                    animationHandler = previousKey.getAnimationHandler();
+                } else {
+                    animationHandler = new NoOpAnimationHandler();
+                }
+                ViewUtils.waitForMeasure(newView, new ViewUtils.OnMeasuredCallback() {
+                    @Override
+                    public void onMeasured(View view, int width, int height) {
+                        animationHandler.runAnimation(previousView,
+                                newView,
+                                stateChange.getDirection(),
+                                new AnimationHandler.CompletionListener() {
+                                    @Override
+                                    public void onCompleted() {
+                                        container.removeView(previousView);
+                                        finishStateChange(completionCallback);
+                                    }
+                                });
+                    }
+                });
+            }
+        }
+
+        private void finishStateChange(Callback completionCallback) {
             completionCallback.stateChangeComplete();
         }
     };

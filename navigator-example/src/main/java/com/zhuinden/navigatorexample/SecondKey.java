@@ -11,7 +11,8 @@ import com.zhuinden.navigator.ViewController;
  */
 @AutoValue
 public abstract class SecondKey
-        implements StateKey, Parcelable {
+        extends StateKey
+        implements Parcelable {
     @Override
     public int layout() {
         return R.layout.fragment_second;

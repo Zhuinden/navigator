@@ -19,8 +19,12 @@ package com.zhuinden.navigator;
  * Created by Zhuinden on 2017.03.11..
  */
 
-public interface StateKey {
-    int layout();
+public abstract class StateKey {
+    public abstract int layout();
 
-    ViewController createViewController(Object... args);
+    public abstract ViewController createViewController(Object... args);
+
+    public AnimationHandler getAnimationHandler() {
+        return new SegueAnimationHandler();
+    }
 }
