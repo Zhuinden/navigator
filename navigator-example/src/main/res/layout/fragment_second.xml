@@ -4,6 +4,7 @@
               android:layout_height="match_parent"
               android:gravity="center"
               android:orientation="vertical">
+
     <EditText
         android:id="@+id/second_edittext"
         android:layout_width="wrap_content"

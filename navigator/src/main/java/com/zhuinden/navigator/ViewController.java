@@ -15,15 +15,16 @@ public abstract class ViewController {
 
     public <T extends StateKey> T getKey() {
         // noinspection unchecked
-        return (T)stateKey;
+        return (T) stateKey;
     }
 
     public abstract void attach(View view);
+
     public abstract void detach(View view);
 
     public static <T extends ViewController> T get(View view) {
         // noinspection unchecked
-        return (T)view.getTag(R.id.navigator_controller_id);
+        return (T) view.getTag(R.id.navigator_controller_id);
     }
 
     public static void bind(ViewController controller, View view) {

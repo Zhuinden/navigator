@@ -39,14 +39,11 @@ public class BackstackHost
             StateKey previousKey = stateChange.topPreviousState();
             View previousView = container.getChildAt(0);
             backstackManager.persistViewToState(previousView);
-            ViewController previousController = null;
+            ViewController previousController;
             if(previousView != null && previousKey != null) {
                 com.zhuinden.simplestack.SavedState savedState = backstackManager.getSavedState(previousKey);
                 previousController = ViewController.get(previousView);
                 if(previousController instanceof Bundleable) {
-                    if(savedState.getBundle() == null) {
-                        savedState.setBundle(new StateBundle());
-                    }
                     savedState.setBundle(((Bundleable) previousController).toBundle());
                 }
                 previousController.detach(previousView);
@@ -93,7 +90,7 @@ public class BackstackHost
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         backstackManager.persistViewToState(container.getChildAt(0));
-        ViewController viewController = (ViewController)container.getChildAt(0).getTag(R.id.navigator_controller_id);
+        ViewController viewController = (ViewController) container.getChildAt(0).getTag(R.id.navigator_controller_id);
         if(viewController instanceof Bundleable) {
             backstackManager.getSavedState(viewController.getKey()).setBundle(((Bundleable) viewController).toBundle());
         }
@@ -114,7 +111,7 @@ public class BackstackHost
 
     @Override
     public void onDestroyView() {
-        ViewController viewController = (ViewController)container.getChildAt(0).getTag(R.id.navigator_controller_id);
+        ViewController viewController = (ViewController) container.getChildAt(0).getTag(R.id.navigator_controller_id);
         viewController.detach(container.getChildAt(0));
         backstackManager.getBackstack().executePendingStateChange();
         container = null;

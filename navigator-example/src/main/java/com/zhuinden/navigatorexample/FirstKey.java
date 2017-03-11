@@ -10,7 +10,8 @@ import com.zhuinden.navigator.ViewController;
  * Created by Zhuinden on 2017.03.10..
  */
 
-public class FirstKey implements StateKey, Parcelable {
+public class FirstKey
+        implements StateKey, Parcelable {
     public FirstKey() {
     }
 

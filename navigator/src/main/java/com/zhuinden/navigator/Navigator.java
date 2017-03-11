@@ -40,7 +40,7 @@ public class Navigator {
         if(initialKeys == null || initialKeys.isEmpty()) {
             throw new IllegalArgumentException("Initial keys cannot be null!");
         }
-        BackstackHost backstackHost = (BackstackHost)activity.getFragmentManager().findFragmentByTag("NAVIGATOR_BACKSTACK_HOST");
+        BackstackHost backstackHost = (BackstackHost) activity.getFragmentManager().findFragmentByTag("NAVIGATOR_BACKSTACK_HOST");
         if(backstackHost == null) {
             backstackHost = new BackstackHost();
             activity.getFragmentManager().beginTransaction().add(backstackHost, "NAVIGATOR_BACKSTACK_HOST").commit();
@@ -53,9 +53,9 @@ public class Navigator {
 
     private static Activity findActivity(Context context) {
         if(context instanceof Activity) {
-            return (Activity)context;
+            return (Activity) context;
         } else {
-            ContextWrapper contextWrapper = (ContextWrapper)context;
+            ContextWrapper contextWrapper = (ContextWrapper) context;
             Context baseContext = contextWrapper.getBaseContext();
             if(baseContext == null) {
                 throw new IllegalStateException("Activity was not found as base context of view!");
@@ -66,7 +66,7 @@ public class Navigator {
 
     public static Backstack getBackstack(Context context) {
         Activity activity = findActivity(context);
-        BackstackHost backstackHost = (BackstackHost)activity.getFragmentManager().findFragmentByTag("NAVIGATOR_BACKSTACK_HOST");
+        BackstackHost backstackHost = (BackstackHost) activity.getFragmentManager().findFragmentByTag("NAVIGATOR_BACKSTACK_HOST");
         return backstackHost.getBackstack();
     }
 

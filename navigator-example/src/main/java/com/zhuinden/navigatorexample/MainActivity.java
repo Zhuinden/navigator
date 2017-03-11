@@ -1,21 +1,11 @@
 package com.zhuinden.navigatorexample;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.RelativeLayout;
 
 import com.zhuinden.navigator.Navigator;
 import com.zhuinden.simplestack.HistoryBuilder;
-import com.zhuinden.simplestack.StateChanger;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
