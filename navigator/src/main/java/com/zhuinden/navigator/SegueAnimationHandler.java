@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.support.annotation.NonNull;
 import android.view.View;
 
 /**
@@ -13,7 +14,7 @@ import android.view.View;
 public class SegueAnimationHandler
         implements AnimationHandler {
     @Override
-    public void runAnimation(View previousView, View newView, int direction, final CompletionListener completionListener) {
+    public void runAnimation(@NonNull View previousView, @NonNull View newView, int direction, @NonNull final CompletionListener completionListener) {
         runAnimation(previousView, newView, direction, new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {

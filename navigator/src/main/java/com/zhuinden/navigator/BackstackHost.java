@@ -18,15 +18,11 @@ package com.zhuinden.navigator;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.zhuinden.simplestack.Backstack;
 import com.zhuinden.simplestack.BackstackManager;
 import com.zhuinden.simplestack.Bundleable;
-import com.zhuinden.simplestack.StateChange;
-import com.zhuinden.simplestack.StateChanger;
 import com.zhuinden.statebundle.StateBundle;
 
 import java.util.Collections;
@@ -37,79 +33,15 @@ import java.util.List;
  */
 
 public class BackstackHost
-        extends Fragment {
+        extends Fragment
+        implements BaseContextProvider {
     public BackstackHost() {
         setRetainInstance(true);
     }
 
     BackstackManager backstackManager;
 
-    StateChanger stateChanger = new StateChanger() {
-        @Override
-        public void handleStateChange(final StateChange stateChange, final StateChanger.Callback completionCallback) {
-            if(stateChange.topNewState().equals(stateChange.topPreviousState())) {
-                completionCallback.stateChangeComplete();
-                return;
-            }
-            StateKey previousKey = stateChange.topPreviousState();
-            final View previousView = container.getChildAt(0);
-            backstackManager.persistViewToState(previousView);
-            ViewController previousController;
-            if(previousView != null && previousKey != null) {
-                com.zhuinden.simplestack.SavedState savedState = backstackManager.getSavedState(previousKey);
-                previousController = ViewController.get(previousView);
-                if(previousController instanceof Bundleable) {
-                    savedState.setBundle(((Bundleable) previousController).toBundle());
-                }
-                previousController.detach(previousView);
-            }
-
-            StateKey newKey = stateChange.topNewState();
-            ViewController newController = newKey.createViewController();
-            Context newContext = stateChange.createContext(getActivity(), newKey);
-            final View newView = LayoutInflater.from(newContext).inflate(newKey.layout(), container, false);
-            backstackManager.restoreViewFromState(newView);
-            ViewController.bind(newController, newView);
-            if(newController instanceof Bundleable) {
-                ((Bundleable) newController).fromBundle(backstackManager.getSavedState(newKey).getBundle());
-            }
-            container.addView(newView);
-            newController.attach(newView);
-
-            if(previousView == null) {
-                finishStateChange(completionCallback);
-                return;
-            } else {
-                final AnimationHandler animationHandler;
-                if(stateChange.getDirection() == StateChange.FORWARD) {
-                    animationHandler = newKey.getAnimationHandler();
-                } else if(previousKey != null && stateChange.getDirection() == StateChange.BACKWARD) {
-                    animationHandler = previousKey.getAnimationHandler();
-                } else {
-                    animationHandler = new NoOpAnimationHandler();
-                }
-                ViewUtils.waitForMeasure(newView, new ViewUtils.OnMeasuredCallback() {
-                    @Override
-                    public void onMeasured(View view, int width, int height) {
-                        animationHandler.runAnimation(previousView,
-                                newView,
-                                stateChange.getDirection(),
-                                new AnimationHandler.CompletionListener() {
-                                    @Override
-                                    public void onCompleted() {
-                                        container.removeView(previousView);
-                                        finishStateChange(completionCallback);
-                                    }
-                                });
-                    }
-                });
-            }
-        }
-
-        private void finishStateChange(Callback completionCallback) {
-            completionCallback.stateChangeComplete();
-        }
-    };
+    NavigatorStateChanger stateChanger;
 
     List<Object> initialKeys = Collections.emptyList(); // should not stay empty list
     ViewGroup container;
@@ -129,6 +61,7 @@ public class BackstackHost
             if(savedInstanceState != null) {
                 backstackManager.fromBundle(savedInstanceState.<StateBundle>getParcelable("NAVIGATOR_STATE_BUNDLE"));
             }
+            stateChanger = new NavigatorStateChanger(this, backstackManager, container);
         }
         backstackManager.setStateChanger(stateChanger);
     }
@@ -167,5 +100,10 @@ public class BackstackHost
 
     public Backstack getBackstack() {
         return backstackManager.getBackstack();
+    }
+
+    @Override
+    public Context getBaseContext() {
+        return getActivity();
     }
 }

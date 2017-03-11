@@ -1,5 +1,6 @@
 package com.zhuinden.navigator;
 
+import android.support.annotation.NonNull;
 import android.view.View;
 
 /**
@@ -9,7 +10,7 @@ import android.view.View;
 public class NoOpAnimationHandler
         implements AnimationHandler {
     @Override
-    public void runAnimation(View previousView, View newView, int direction, CompletionListener completionListener) {
+    public void runAnimation(@NonNull View previousView, @NonNull View newView, int direction, @NonNull CompletionListener completionListener) {
         completionListener.onCompleted();
     }
 }
