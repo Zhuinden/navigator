@@ -23,7 +23,7 @@ public class MainActivity
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        Navigator.install(this, root, HistoryBuilder.single(new FirstKey()));
+        Navigator.install(this, root, HistoryBuilder.single(FirstKey.create()));
     }
 
     @Override

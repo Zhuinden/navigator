@@ -42,6 +42,8 @@ dependencies {
     testCompile 'org.robolectric:robolectric:3.0'
     testCompile 'org.apache.maven:maven-ant-tasks:2.1.3'
 
+    apt 'frankiesardo:auto-parcel:1.0.3'
+
 
     compile 'com.jakewharton:butterknife:8.5.1'
     apt 'com.jakewharton:butterknife-compiler:8.5.1'

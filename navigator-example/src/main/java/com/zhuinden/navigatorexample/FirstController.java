@@ -28,7 +28,7 @@ public class FirstController
 
     @OnClick(R.id.first_button)
     public void firstButtonClick(View view) {
-        Navigator.getBackstack(view.getContext()).goTo(new SecondKey());
+        Navigator.getBackstack(view.getContext()).goTo(SecondKey.create());
     }
 
     Unbinder unbinder;
