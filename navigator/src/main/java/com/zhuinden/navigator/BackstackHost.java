@@ -41,7 +41,7 @@ public class BackstackHost
 
     BackstackManager backstackManager;
 
-    NavigatorStateChanger stateChanger;
+    InternalStateChanger stateChanger;
 
     List<Object> initialKeys = Collections.emptyList(); // should not stay empty list
     ViewGroup container;
@@ -61,8 +61,8 @@ public class BackstackHost
             if(savedInstanceState != null) {
                 backstackManager.fromBundle(savedInstanceState.<StateBundle>getParcelable("NAVIGATOR_STATE_BUNDLE"));
             }
-            stateChanger = new NavigatorStateChanger(this, backstackManager, container);
         }
+        stateChanger = new InternalStateChanger(this, backstackManager, container);
         backstackManager.setStateChanger(stateChanger);
     }
 
@@ -94,6 +94,7 @@ public class BackstackHost
         ViewController viewController = (ViewController) container.getChildAt(0).getTag(R.id.navigator_controller_id);
         viewController.detach(container.getChildAt(0));
         backstackManager.getBackstack().executePendingStateChange();
+        stateChanger = null;
         container = null;
         super.onDestroyView();
     }

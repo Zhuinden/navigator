@@ -15,13 +15,13 @@ import com.zhuinden.simplestack.StateChanger;
  * Created by Zhuinden on 2017.03.11..
  */
 
-public class NavigatorStateChanger
+public class InternalStateChanger
         implements StateChanger {
     BaseContextProvider baseContextProvider;
     BackstackManager backstackManager;
     ViewGroup container;
 
-    public NavigatorStateChanger(BaseContextProvider baseContextProvider, BackstackManager backstackManager, ViewGroup container) {
+    public InternalStateChanger(BaseContextProvider baseContextProvider, BackstackManager backstackManager, ViewGroup container) {
         this.baseContextProvider = baseContextProvider;
         this.backstackManager = backstackManager;
         this.container = container;
@@ -55,36 +55,31 @@ public class NavigatorStateChanger
         if(newController instanceof Bundleable) {
             ((Bundleable) newController).fromBundle(backstackManager.getSavedState(newKey).getBundle());
         }
-        container.addView(newView);
         newController.attach(newView);
 
         if(previousView == null) {
+            container.addView(newView);
             finishStateChange(completionCallback);
             return;
         } else {
-            final AnimationHandler animationHandler;
+            final ViewChangeHandler viewChangeHandler;
             if(stateChange.getDirection() == StateChange.FORWARD) {
-                animationHandler = newKey.getAnimationHandler();
+                viewChangeHandler = newKey.getAnimationHandler();
             } else if(previousKey != null && stateChange.getDirection() == StateChange.BACKWARD) {
-                animationHandler = previousKey.getAnimationHandler();
+                viewChangeHandler = previousKey.getAnimationHandler();
             } else {
-                animationHandler = new NoOpAnimationHandler();
+                viewChangeHandler = new NoOpViewChangeHandler();
             }
-            ViewUtils.waitForMeasure(newView, new ViewUtils.OnMeasuredCallback() {
-                @Override
-                public void onMeasured(View view, int width, int height) {
-                    animationHandler.runAnimation(previousView,
-                            newView,
-                            stateChange.getDirection(),
-                            new AnimationHandler.CompletionListener() {
-                                @Override
-                                public void onCompleted() {
-                                    container.removeView(previousView);
-                                    finishStateChange(completionCallback);
-                                }
-                            });
-                }
-            });
+            viewChangeHandler.performViewChange(container,
+                    previousView,
+                    newView,
+                    stateChange.getDirection(),
+                    new ViewChangeHandler.CompletionCallback() {
+                        @Override
+                        public void onCompleted() {
+                            finishStateChange(completionCallback);
+                        }
+                    });
         }
     }
 

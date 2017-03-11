@@ -4,6 +4,7 @@ import android.os.Parcelable;
 
 import com.google.auto.value.AutoValue;
 import com.zhuinden.navigator.StateKey;
+import com.zhuinden.navigator.ViewChangeHandler;
 import com.zhuinden.navigator.ViewController;
 
 /**
@@ -25,5 +26,10 @@ public abstract class FirstKey
     @Override
     public ViewController createViewController(Object... args) {
         return new FirstController(this);
+    }
+
+    @Override
+    public ViewChangeHandler getAnimationHandler() {
+        return new TransitionHandler();
     }
 }

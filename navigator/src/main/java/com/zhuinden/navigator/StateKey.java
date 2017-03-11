@@ -24,7 +24,7 @@ public abstract class StateKey {
 
     public abstract ViewController createViewController(Object... args);
 
-    public AnimationHandler getAnimationHandler() {
-        return new SegueAnimationHandler();
+    public ViewChangeHandler getAnimationHandler() {
+        return new SegueViewChangeHandler();
     }
 }
