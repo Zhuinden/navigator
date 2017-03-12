@@ -3,10 +3,10 @@ package com.zhuinden.navigatorexample;
 import android.os.Parcelable;
 
 import com.google.auto.value.AutoValue;
-import com.zhuinden.navigator.SegueViewChangeHandler;
 import com.zhuinden.navigator.StateKey;
 import com.zhuinden.navigator.ViewChangeHandler;
 import com.zhuinden.navigator.ViewController;
+import com.zhuinden.navigator.changehandlers.SegueViewChangeHandler;
 
 /**
  * Created by Zhuinden on 2017.03.10..
@@ -21,7 +21,7 @@ public abstract class SecondKey
     }
 
     @Override
-    public ViewController createViewController(Object... args) {
+    public ViewController provideViewController(Object... args) {
         return new SecondController(this);
     }
 

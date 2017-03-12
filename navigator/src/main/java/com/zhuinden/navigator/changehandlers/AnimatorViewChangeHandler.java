@@ -1,4 +1,4 @@
-package com.zhuinden.navigator;
+package com.zhuinden.navigator.changehandlers;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -6,11 +6,13 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.zhuinden.navigator.ViewChangeHandler;
+
 /**
  * Created by Zhuinden on 2017.03.11..
  */
 
-public abstract class ViewAnimatorChangeHandler
+public abstract class AnimatorViewChangeHandler
         implements ViewChangeHandler {
     @Override
     public void performViewChange(@NonNull final ViewGroup container, @NonNull final View previousView, @NonNull final View newView, final int direction, @NonNull final CompletionCallback completionCallback) {

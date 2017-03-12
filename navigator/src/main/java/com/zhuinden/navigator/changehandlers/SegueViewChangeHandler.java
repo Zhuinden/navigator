@@ -1,4 +1,4 @@
-package com.zhuinden.navigator;
+package com.zhuinden.navigator.changehandlers;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -11,7 +11,7 @@ import android.view.View;
  */
 
 public class SegueViewChangeHandler
-        extends ViewAnimatorChangeHandler {
+        extends AnimatorViewChangeHandler {
     @Override
     protected Animator createAnimator(@NonNull View from, @NonNull View to, int direction) {
         int fromTranslation = (-1) * direction * from.getWidth();

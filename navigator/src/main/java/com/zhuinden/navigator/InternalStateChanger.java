@@ -5,9 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.zhuinden.navigator.changehandlers.NoOpViewChangeHandler;
 import com.zhuinden.simplestack.BackstackManager;
-import com.zhuinden.simplestack.Bundleable;
-import com.zhuinden.simplestack.SavedState;
 import com.zhuinden.simplestack.StateChange;
 import com.zhuinden.simplestack.StateChanger;
 
@@ -35,32 +34,21 @@ public class InternalStateChanger
         }
         StateKey previousKey = stateChange.topPreviousState();
         final View previousView = container.getChildAt(0);
-        backstackManager.persistViewToState(previousView);
-        ViewController previousController;
         if(previousView != null && previousKey != null) {
-            SavedState savedState = backstackManager.getSavedState(previousKey);
-            previousController = ViewController.get(previousView);
-            if(previousController instanceof Bundleable) {
-                savedState.setBundle(((Bundleable) previousController).toBundle());
-            }
-            previousController.detach(previousView);
+            ViewController.persistState(backstackManager, previousView);
+            ViewController.unbind(previousView);
         }
 
         StateKey newKey = stateChange.topNewState();
-        ViewController newController = newKey.createViewController();
+        ViewController newController = newKey.provideViewController();
         Context newContext = stateChange.createContext(baseContextProvider.getBaseContext(), newKey);
         final View newView = LayoutInflater.from(newContext).inflate(newKey.layout(), container, false);
-        backstackManager.restoreViewFromState(newView);
         ViewController.bind(newController, newView);
-        if(newController instanceof Bundleable) {
-            ((Bundleable) newController).fromBundle(backstackManager.getSavedState(newKey).getBundle());
-        }
-        newController.attach(newView);
+        ViewController.restoreState(backstackManager, newView);
 
         if(previousView == null) {
             container.addView(newView);
             finishStateChange(completionCallback);
-            return;
         } else {
             final ViewChangeHandler viewChangeHandler;
             if(stateChange.getDirection() == StateChange.FORWARD) {

@@ -22,7 +22,6 @@ import android.view.ViewGroup;
 
 import com.zhuinden.simplestack.Backstack;
 import com.zhuinden.simplestack.BackstackManager;
-import com.zhuinden.simplestack.Bundleable;
 import com.zhuinden.statebundle.StateBundle;
 
 import java.util.Collections;
@@ -69,11 +68,7 @@ public class BackstackHost
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        backstackManager.persistViewToState(container.getChildAt(0));
-        ViewController viewController = (ViewController) container.getChildAt(0).getTag(R.id.navigator_controller_id);
-        if(viewController instanceof Bundleable) {
-            backstackManager.getSavedState(viewController.getKey()).setBundle(((Bundleable) viewController).toBundle());
-        }
+        ViewController.persistState(backstackManager, container.getChildAt(0));
         outState.putParcelable("NAVIGATOR_STATE_BUNDLE", backstackManager.toBundle());
     }
 
@@ -92,7 +87,7 @@ public class BackstackHost
     @Override
     public void onDestroyView() {
         ViewController viewController = (ViewController) container.getChildAt(0).getTag(R.id.navigator_controller_id);
-        viewController.detach(container.getChildAt(0));
+        viewController.onViewDestroyed(container.getChildAt(0));
         backstackManager.getBackstack().executePendingStateChange();
         stateChanger = null;
         container = null;

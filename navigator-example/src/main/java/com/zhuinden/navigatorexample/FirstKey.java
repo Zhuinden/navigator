@@ -24,7 +24,7 @@ public abstract class FirstKey
     }
 
     @Override
-    public ViewController createViewController(Object... args) {
+    public ViewController provideViewController(Object... args) {
         return new FirstController(this);
     }
 

@@ -17,6 +17,9 @@ package com.zhuinden.navigator;
 
 import android.view.View;
 
+import com.zhuinden.simplestack.BackstackManager;
+import com.zhuinden.simplestack.Bundleable;
+
 /**
  * Created by Zhuinden on 2017.03.11..
  */
@@ -33,9 +36,14 @@ public abstract class ViewController {
         return (T) stateKey;
     }
 
-    public abstract void attach(View view);
+    protected abstract void onViewCreated(View view);
 
-    public abstract void detach(View view);
+    protected abstract void onViewRestored(View view);
+
+    protected void preViewSaveState(View view) {
+    }
+
+    protected abstract void onViewDestroyed(View view);
 
     public static <T extends ViewController> T get(View view) {
         // noinspection unchecked
@@ -44,9 +52,30 @@ public abstract class ViewController {
 
     public static void bind(ViewController controller, View view) {
         view.setTag(R.id.navigator_controller_id, controller);
+        controller.onViewCreated(view);
     }
 
     public static void unbind(View view) {
+        ViewController controller = get(view);
+        controller.onViewDestroyed(view);
         view.setTag(R.id.navigator_controller_id, null);
+    }
+
+    static void persistState(BackstackManager backstackManager, View view) {
+        ViewController viewController = get(view);
+        viewController.preViewSaveState(view);
+        backstackManager.persistViewToState(view);
+        if(viewController instanceof Bundleable) {
+            backstackManager.getSavedState(viewController.getKey()).setBundle(((Bundleable) viewController).toBundle());
+        }
+    }
+
+    static void restoreState(BackstackManager backstackManager, View view) {
+        ViewController viewController = get(view);
+        backstackManager.restoreViewFromState(view);
+        if(viewController instanceof Bundleable) {
+            ((Bundleable) viewController).fromBundle(backstackManager.getSavedState(viewController.getKey()).getBundle());
+        }
+        viewController.onViewRestored(view);
     }
 }

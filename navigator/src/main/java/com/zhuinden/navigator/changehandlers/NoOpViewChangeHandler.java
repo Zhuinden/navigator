@@ -1,8 +1,10 @@
-package com.zhuinden.navigator;
+package com.zhuinden.navigator.changehandlers;
 
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.zhuinden.navigator.ViewChangeHandler;
 
 /**
  * Created by Zhuinden on 2017.03.11..

@@ -34,15 +34,25 @@ public class FirstController
     Unbinder unbinder;
 
     @Override
-    public void attach(View view) {
+    public void onViewCreated(View view) {
         unbinder = ButterKnife.bind(this, view);
     }
 
     @Override
-    public void detach(View view) {
+    protected void onViewRestored(View view) {
+        Log.i("FIRST", "Restored state of [" + view + "]");
+    }
+
+    @Override
+    public void onViewDestroyed(View view) {
         if(unbinder != null) {
             unbinder.unbind();
         }
+    }
+
+    @Override
+    protected void preViewSaveState(View view) {
+        Log.i("FIRST", "Saving state of [" + view + "]");
     }
 
     @NonNull

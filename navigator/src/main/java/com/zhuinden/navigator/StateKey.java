@@ -15,14 +15,19 @@
  */
 package com.zhuinden.navigator;
 
+import android.support.annotation.LayoutRes;
+
+import com.zhuinden.navigator.changehandlers.SegueViewChangeHandler;
+
 /**
  * Created by Zhuinden on 2017.03.11..
  */
 
 public abstract class StateKey {
+    @LayoutRes
     public abstract int layout();
 
-    public abstract ViewController createViewController(Object... args);
+    public abstract ViewController provideViewController(Object... args);
 
     public ViewChangeHandler getAnimationHandler() {
         return new SegueViewChangeHandler();
