@@ -86,8 +86,8 @@ public class BackstackHost
 
     @Override
     public void onDestroyView() {
-        ViewController.unbind(container.getChildAt(0));
         backstackManager.getBackstack().executePendingStateChange();
+        ViewController.unbind(container.getChildAt(0));
         stateChanger = null;
         container = null;
         super.onDestroyView();
