@@ -21,11 +21,16 @@ import com.zhuinden.simplestack.BackstackManager;
 import com.zhuinden.simplestack.Bundleable;
 
 /**
+ * You need to extend this class.
+ *
+ * In order to persist its state into a StateBundle, you need to implement Bundleable.
+ *
+ * In that case, it should also manage the View's state bundle, if the View is Bundleable.
+ *
  * Created by Zhuinden on 2017.03.11..
  */
-
 public abstract class ViewController {
-    StateKey stateKey;
+    private StateKey stateKey;
 
     public ViewController(StateKey stateKey) {
         this.stateKey = stateKey;

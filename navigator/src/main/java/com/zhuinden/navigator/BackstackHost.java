@@ -28,10 +28,11 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * This is public because it has to be.
+ *
  * Created by Zhuinden on 2017.03.11..
  */
-
-public class BackstackHost
+public final class BackstackHost
         extends Fragment
         implements BaseContextProvider {
     public BackstackHost() {
