@@ -31,59 +31,74 @@ import com.zhuinden.simplestack.StateChanger;
 
 class InternalStateChanger
         implements StateChanger {
+    static class NoOpStateChanger
+            implements StateChanger {
+        @Override
+        public void handleStateChange(StateChange stateChange, Callback completionCallback) {
+            completionCallback.stateChangeComplete();
+        }
+    }
+
     private BaseContextProvider baseContextProvider;
+    private StateChanger externalStateChanger;
     private BackstackManager backstackManager;
     private ViewGroup container;
 
-    InternalStateChanger(BaseContextProvider baseContextProvider, BackstackManager backstackManager, ViewGroup container) {
+    InternalStateChanger(BaseContextProvider baseContextProvider, StateChanger externalStateChanger, BackstackManager backstackManager, ViewGroup container) {
         this.baseContextProvider = baseContextProvider;
+        this.externalStateChanger = externalStateChanger;
         this.backstackManager = backstackManager;
         this.container = container;
     }
 
     @Override
     public void handleStateChange(final StateChange stateChange, final Callback completionCallback) {
-        if(stateChange.topNewState().equals(stateChange.topPreviousState())) {
-            completionCallback.stateChangeComplete();
-            return;
-        }
-        StateKey previousKey = stateChange.topPreviousState();
-        final View previousView = container.getChildAt(0);
-        if(previousView != null && previousKey != null) {
-            ViewController.persistState(backstackManager, previousView);
-            ViewController.unbind(previousView);
-        }
+        externalStateChanger.handleStateChange(stateChange, new Callback() {
+            @Override
+            public void stateChangeComplete() {
+                if(stateChange.topNewState().equals(stateChange.topPreviousState())) {
+                    completionCallback.stateChangeComplete();
+                    return;
+                }
+                StateKey previousKey = stateChange.topPreviousState();
+                final View previousView = container.getChildAt(0);
+                if(previousView != null && previousKey != null) {
+                    ViewController.persistState(backstackManager, previousView);
+                    ViewController.unbind(previousView);
+                }
 
-        StateKey newKey = stateChange.topNewState();
-        ViewController newController = newKey.provideViewController();
-        Context newContext = stateChange.createContext(baseContextProvider.getBaseContext(), newKey);
-        final View newView = LayoutInflater.from(newContext).inflate(newKey.layout(), container, false);
-        ViewController.bind(newController, newView);
-        ViewController.restoreState(backstackManager, newView);
+                StateKey newKey = stateChange.topNewState();
+                ViewController newController = newKey.provideViewController();
+                Context newContext = stateChange.createContext(baseContextProvider.getBaseContext(), newKey);
+                final View newView = LayoutInflater.from(newContext).inflate(newKey.layout(), container, false);
+                ViewController.bind(newController, newView);
+                ViewController.restoreState(backstackManager, newView);
 
-        if(previousView == null) {
-            container.addView(newView);
-            finishStateChange(completionCallback);
-        } else {
-            final ViewChangeHandler viewChangeHandler;
-            if(stateChange.getDirection() == StateChange.FORWARD) {
-                viewChangeHandler = newKey.getAnimationHandler();
-            } else if(previousKey != null && stateChange.getDirection() == StateChange.BACKWARD) {
-                viewChangeHandler = previousKey.getAnimationHandler();
-            } else {
-                viewChangeHandler = new NoOpViewChangeHandler();
+                if(previousView == null) {
+                    container.addView(newView);
+                    finishStateChange(completionCallback);
+                } else {
+                    final ViewChangeHandler viewChangeHandler;
+                    if(stateChange.getDirection() == StateChange.FORWARD) {
+                        viewChangeHandler = newKey.getAnimationHandler();
+                    } else if(previousKey != null && stateChange.getDirection() == StateChange.BACKWARD) {
+                        viewChangeHandler = previousKey.getAnimationHandler();
+                    } else {
+                        viewChangeHandler = new NoOpViewChangeHandler();
+                    }
+                    viewChangeHandler.performViewChange(container,
+                            previousView,
+                            newView,
+                            stateChange.getDirection(),
+                            new ViewChangeHandler.CompletionCallback() {
+                                @Override
+                                public void onCompleted() {
+                                    finishStateChange(completionCallback);
+                                }
+                            });
+                }
             }
-            viewChangeHandler.performViewChange(container,
-                    previousView,
-                    newView,
-                    stateChange.getDirection(),
-                    new ViewChangeHandler.CompletionCallback() {
-                        @Override
-                        public void onCompleted() {
-                            finishStateChange(completionCallback);
-                        }
-                    });
-        }
+        });
     }
 
     private void finishStateChange(Callback completionCallback) {

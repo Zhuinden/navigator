@@ -3,7 +3,6 @@ package com.zhuinden.navigatorexample;
 import android.os.Parcelable;
 
 import com.google.auto.value.AutoValue;
-import com.zhuinden.navigator.StateKey;
 import com.zhuinden.navigator.ViewChangeHandler;
 import com.zhuinden.navigator.ViewController;
 
@@ -12,15 +11,15 @@ import com.zhuinden.navigator.ViewController;
  */
 @AutoValue
 public abstract class FirstKey
-        extends StateKey
+        extends StateTitleKey
         implements Parcelable {
+    public static FirstKey create() {
+        return new AutoValue_FirstKey();
+    }
+
     @Override
     public int layout() {
         return R.layout.fragment_first;
-    }
-
-    public static FirstKey create() {
-        return new AutoValue_FirstKey();
     }
 
     @Override
@@ -31,5 +30,10 @@ public abstract class FirstKey
     @Override
     public ViewChangeHandler getAnimationHandler() {
         return new TransitionHandler();
+    }
+
+    @Override
+    public String getTitle() {
+        return "First";
     }
 }

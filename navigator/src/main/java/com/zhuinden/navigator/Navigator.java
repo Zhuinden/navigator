@@ -23,14 +23,61 @@ import android.support.annotation.NonNull;
 import android.view.ViewGroup;
 
 import com.zhuinden.simplestack.Backstack;
+import com.zhuinden.simplestack.BackstackManager;
+import com.zhuinden.simplestack.DefaultKeyParceler;
+import com.zhuinden.simplestack.DefaultStateClearStrategy;
+import com.zhuinden.simplestack.KeyParceler;
+import com.zhuinden.simplestack.StateChanger;
 
 import java.util.List;
 
 public class Navigator {
+    public static class Installer {
+        StateChanger stateChanger = new InternalStateChanger.NoOpStateChanger();
+        BackstackManager.StateClearStrategy stateClearStrategy = new DefaultStateClearStrategy();
+        KeyParceler keyParceler = new DefaultKeyParceler();
+
+        public Installer setStateChanger(@NonNull StateChanger stateChanger) {
+            if(stateChanger == null) {
+                throw new IllegalArgumentException("If set, StateChanger cannot be null!");
+            }
+            this.stateChanger = stateChanger;
+            return this;
+        }
+
+        public Installer setKeyParceler(@NonNull KeyParceler keyParceler) {
+            if(keyParceler == null) {
+                throw new IllegalArgumentException("If set, KeyParceler cannot be null!");
+            }
+            this.keyParceler = keyParceler;
+            return this;
+        }
+
+        public Installer setStateClearStrategy(BackstackManager.StateClearStrategy stateClearStrategy) {
+            if(stateClearStrategy == null) {
+                throw new IllegalArgumentException("If set, StateClearStrategy cannot be null!");
+            }
+            this.stateClearStrategy = stateClearStrategy;
+            return this;
+        }
+
+        public void install(@NonNull Activity activity, @NonNull ViewGroup container, @NonNull List<Object> initialKeys) {
+            Navigator.install(this, activity, container, initialKeys);
+        }
+    }
+
     private Navigator() {
     }
 
+    public static Installer configure() {
+        return new Installer();
+    }
+
     public static void install(@NonNull Activity activity, @NonNull ViewGroup container, @NonNull List<Object> initialKeys) {
+        install(configure(), activity, container, initialKeys);
+    }
+
+    private static void install(Installer installer, @NonNull Activity activity, @NonNull ViewGroup container, @NonNull List<Object> initialKeys) {
         if(activity == null) {
             throw new IllegalArgumentException("Activity cannot be null!");
         }
@@ -46,6 +93,9 @@ public class Navigator {
             activity.getFragmentManager().beginTransaction().add(backstackHost, "NAVIGATOR_BACKSTACK_HOST").commit();
             activity.getFragmentManager().executePendingTransactions();
         }
+        backstackHost.externalStateChanger = installer.stateChanger;
+        backstackHost.keyParceler = installer.keyParceler;
+        backstackHost.stateClearStrategy = installer.stateClearStrategy;
         backstackHost.initialKeys = initialKeys;
         backstackHost.container = container;
         backstackHost.initialize();

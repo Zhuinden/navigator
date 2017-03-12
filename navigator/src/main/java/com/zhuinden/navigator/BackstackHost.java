@@ -22,6 +22,8 @@ import android.view.ViewGroup;
 
 import com.zhuinden.simplestack.Backstack;
 import com.zhuinden.simplestack.BackstackManager;
+import com.zhuinden.simplestack.KeyParceler;
+import com.zhuinden.simplestack.StateChanger;
 import com.zhuinden.statebundle.StateBundle;
 
 import java.util.Collections;
@@ -35,13 +37,18 @@ import java.util.List;
 public final class BackstackHost
         extends Fragment
         implements BaseContextProvider {
+
     public BackstackHost() {
         setRetainInstance(true);
     }
 
+    StateChanger externalStateChanger;
+    KeyParceler keyParceler;
+    BackstackManager.StateClearStrategy stateClearStrategy;
+
     BackstackManager backstackManager;
 
-    InternalStateChanger stateChanger;
+    InternalStateChanger internalStateChanger;
 
     List<Object> initialKeys = Collections.emptyList(); // should not stay empty list
     ViewGroup container;
@@ -57,13 +64,15 @@ public final class BackstackHost
     public void initialize() {
         if(backstackManager == null) {
             backstackManager = new BackstackManager();
+            backstackManager.setKeyParceler(keyParceler);
+            backstackManager.setStateClearStrategy(stateClearStrategy);
             backstackManager.setup(initialKeys);
             if(savedInstanceState != null) {
                 backstackManager.fromBundle(savedInstanceState.<StateBundle>getParcelable("NAVIGATOR_STATE_BUNDLE"));
             }
         }
-        stateChanger = new InternalStateChanger(this, backstackManager, container);
-        backstackManager.setStateChanger(stateChanger);
+        internalStateChanger = new InternalStateChanger(this, externalStateChanger, backstackManager, container);
+        backstackManager.setStateChanger(internalStateChanger);
     }
 
     @Override
@@ -89,7 +98,7 @@ public final class BackstackHost
     public void onDestroyView() {
         backstackManager.getBackstack().executePendingStateChange();
         ViewController.unbind(container.getChildAt(0));
-        stateChanger = null;
+        internalStateChanger = null;
         container = null;
         super.onDestroyView();
     }
