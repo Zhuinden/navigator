@@ -29,7 +29,7 @@ public abstract class SecondKey
     }
 
     @Override
-    public ViewChangeHandler getAnimationHandler() {
+    public ViewChangeHandler getViewChangeHandler() {
         return new SegueViewChangeHandler();
     }
 

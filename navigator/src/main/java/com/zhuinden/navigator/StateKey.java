@@ -29,7 +29,7 @@ public abstract class StateKey {
 
     public abstract ViewController provideViewController(Object... args);
 
-    public ViewChangeHandler getAnimationHandler() {
+    public ViewChangeHandler getViewChangeHandler() {
         return new SegueViewChangeHandler();
     }
 }

@@ -21,8 +21,7 @@ Need to decide:
 
 ``` java
 public class MainActivity
-        extends AppCompatActivity
-        implements StateChanger {
+        extends AppCompatActivity {
     public static final String TAG = "MainActivity";
 
     @BindView(R.id.root)
@@ -99,7 +98,7 @@ public abstract class FirstKey
 
     @Override
     public int layout() {
-        return R.layout.fragment_first;
+        return R.layout.path_first;
     }
 
     @Override
@@ -108,7 +107,7 @@ public abstract class FirstKey
     }
 
     @Override
-    public ViewChangeHandler getAnimationHandler() {
+    public ViewChangeHandler getViewChangeHandler() {
         return new SegueViewChangeHandler();
     }
 }
@@ -136,7 +135,7 @@ In order to use Navigator, you need to add jitpack to your project root gradle:
 
 and add the compile dependency to your module level gradle.
 
-    compile 'com.github.Zhuinden:navigator:0.1.0'
+    compile 'com.github.Zhuinden:navigator:0.1.1'
 
 ## License
 
