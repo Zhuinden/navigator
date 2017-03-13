@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.RelativeLayout;
 
 import com.zhuinden.navigator.Navigator;
+import com.zhuinden.simplestack.Backstack;
 import com.zhuinden.simplestack.HistoryBuilder;
 import com.zhuinden.simplestack.StateChange;
 import com.zhuinden.simplestack.StateChanger;
@@ -28,7 +29,14 @@ public class MainActivity
 
         Navigator.configure() //
                 .setStateChanger(this) //
+                .setDeferredInitialization(true)
                 .install(this, root, HistoryBuilder.single(FirstKey.create()));
+
+        // if init is deferred, you can do whatever you want with the backstack
+        // but then the initialization must be started explicitly
+        Backstack backstack = Navigator.getBackstack(this);
+
+        Navigator.executeDeferredInitialization(this);
     }
 
     @Override

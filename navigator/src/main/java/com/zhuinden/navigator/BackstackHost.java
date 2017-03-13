@@ -61,7 +61,7 @@ public final class BackstackHost
         this.savedInstanceState = savedInstanceState;
     }
 
-    public void initialize() {
+    void initialize(boolean isInitializeDeferred) {
         if(backstackManager == null) {
             backstackManager = new BackstackManager();
             backstackManager.setKeyParceler(keyParceler);
@@ -71,9 +71,12 @@ public final class BackstackHost
                 backstackManager.fromBundle(savedInstanceState.<StateBundle>getParcelable("NAVIGATOR_STATE_BUNDLE"));
             }
         }
-        internalStateChanger = new InternalStateChanger(this, externalStateChanger, backstackManager, container);
-        backstackManager.setStateChanger(internalStateChanger);
+        if(!isInitializeDeferred) {
+            internalStateChanger = new InternalStateChanger(this, externalStateChanger, backstackManager, container);
+            backstackManager.setStateChanger(internalStateChanger);
+        }
     }
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {

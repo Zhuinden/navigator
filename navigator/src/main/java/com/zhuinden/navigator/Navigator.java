@@ -36,6 +36,7 @@ public class Navigator {
         StateChanger stateChanger = new InternalStateChanger.NoOpStateChanger();
         BackstackManager.StateClearStrategy stateClearStrategy = new DefaultStateClearStrategy();
         KeyParceler keyParceler = new DefaultKeyParceler();
+        boolean isInitializeDeferred = false;
 
         public Installer setStateChanger(@NonNull StateChanger stateChanger) {
             if(stateChanger == null) {
@@ -53,11 +54,16 @@ public class Navigator {
             return this;
         }
 
-        public Installer setStateClearStrategy(BackstackManager.StateClearStrategy stateClearStrategy) {
+        public Installer setStateClearStrategy(@NonNull BackstackManager.StateClearStrategy stateClearStrategy) {
             if(stateClearStrategy == null) {
                 throw new IllegalArgumentException("If set, StateClearStrategy cannot be null!");
             }
             this.stateClearStrategy = stateClearStrategy;
+            return this;
+        }
+
+        public Installer setDeferredInitialization(boolean isInitializeDeferred) {
+            this.isInitializeDeferred = isInitializeDeferred;
             return this;
         }
 
@@ -98,7 +104,12 @@ public class Navigator {
         backstackHost.stateClearStrategy = installer.stateClearStrategy;
         backstackHost.initialKeys = initialKeys;
         backstackHost.container = container;
-        backstackHost.initialize();
+        backstackHost.initialize(installer.isInitializeDeferred);
+    }
+
+    public static void executeDeferredInitialization(Activity activity) {
+        BackstackHost backstackHost = (BackstackHost) activity.getFragmentManager().findFragmentByTag("NAVIGATOR_BACKSTACK_HOST");
+        backstackHost.initialize(false);
     }
 
     private static Activity findActivity(Context context) {
