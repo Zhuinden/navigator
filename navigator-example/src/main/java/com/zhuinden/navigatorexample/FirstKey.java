@@ -28,7 +28,7 @@ public abstract class FirstKey
     }
 
     @Override
-    public ViewChangeHandler getAnimationHandler() {
+    public ViewChangeHandler getViewChangeHandler() {
         return new TransitionHandler();
     }
 

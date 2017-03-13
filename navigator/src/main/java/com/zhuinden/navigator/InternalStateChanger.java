@@ -80,9 +80,9 @@ class InternalStateChanger
                 } else {
                     final ViewChangeHandler viewChangeHandler;
                     if(stateChange.getDirection() == StateChange.FORWARD) {
-                        viewChangeHandler = newKey.getAnimationHandler();
+                        viewChangeHandler = newKey.getViewChangeHandler();
                     } else if(previousKey != null && stateChange.getDirection() == StateChange.BACKWARD) {
-                        viewChangeHandler = previousKey.getAnimationHandler();
+                        viewChangeHandler = previousKey.getViewChangeHandler();
                     } else {
                         viewChangeHandler = new NoOpViewChangeHandler();
                     }
