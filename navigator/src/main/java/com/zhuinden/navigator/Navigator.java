@@ -93,7 +93,7 @@ public class Navigator {
         if(initialKeys == null || initialKeys.isEmpty()) {
             throw new IllegalArgumentException("Initial keys cannot be null!");
         }
-        BackstackHost backstackHost = (BackstackHost) activity.getFragmentManager().findFragmentByTag("NAVIGATOR_BACKSTACK_HOST");
+        BackstackHost backstackHost = findBackstackHost(activity);
         if(backstackHost == null) {
             backstackHost = new BackstackHost();
             activity.getFragmentManager().beginTransaction().add(backstackHost, "NAVIGATOR_BACKSTACK_HOST").commit();
@@ -108,8 +108,12 @@ public class Navigator {
     }
 
     public static void executeDeferredInitialization(Activity activity) {
-        BackstackHost backstackHost = (BackstackHost) activity.getFragmentManager().findFragmentByTag("NAVIGATOR_BACKSTACK_HOST");
+        BackstackHost backstackHost = findBackstackHost(activity);
         backstackHost.initialize(false);
+    }
+
+    private static BackstackHost findBackstackHost(Activity activity) {
+        return (BackstackHost) activity.getFragmentManager().findFragmentByTag("NAVIGATOR_BACKSTACK_HOST");
     }
 
     private static Activity findActivity(Context context) {
@@ -127,7 +131,7 @@ public class Navigator {
 
     public static Backstack getBackstack(Context context) {
         Activity activity = findActivity(context);
-        BackstackHost backstackHost = (BackstackHost) activity.getFragmentManager().findFragmentByTag("NAVIGATOR_BACKSTACK_HOST");
+        BackstackHost backstackHost = findBackstackHost(activity);
         return backstackHost.getBackstack();
     }
 

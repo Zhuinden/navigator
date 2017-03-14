@@ -86,15 +86,29 @@ public final class BackstackHost
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        currentViewController().onActivityStarted();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         backstackManager.reattachStateChanger();
+        currentViewController().onActivityResumed();
     }
 
     @Override
     public void onPause() {
+        currentViewController().onActivityPaused();
         backstackManager.detachStateChanger();
         super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        currentViewController().onActivityStopped();
+        super.onStop();
     }
 
     @Override
@@ -104,6 +118,10 @@ public final class BackstackHost
         internalStateChanger = null;
         container = null;
         super.onDestroyView();
+    }
+
+    private ViewController currentViewController() {
+        return ViewController.get(container.getChildAt(0));
     }
 
     public Backstack getBackstack() {

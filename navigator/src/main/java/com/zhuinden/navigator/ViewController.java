@@ -50,6 +50,18 @@ public abstract class ViewController {
 
     protected abstract void onViewDestroyed(View view);
 
+    protected void onActivityStarted() {
+    }
+
+    protected void onActivityResumed() {
+    }
+
+    protected void onActivityPaused() {
+    }
+
+    protected void onActivityStopped() {
+    }
+
     public static <T extends ViewController> T get(View view) {
         // noinspection unchecked
         return (T) view.getTag(R.id.navigator_controller_id);

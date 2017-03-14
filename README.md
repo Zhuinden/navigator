@@ -63,7 +63,7 @@ public class FirstController
     Unbinder unbinder;
 
     @Override
-    public void onViewCreated(View view) {
+    protected void onViewCreated(View view) {
         // this is called after inflation
         unbinder = ButterKnife.bind(this, view);
     }
@@ -74,7 +74,7 @@ public class FirstController
     }
 
     @Override
-    public void onViewDestroyed(View view) {
+    protected void onViewDestroyed(View view) {
         // this is called when view hierarchy is destroyed, or controller is replaced
         if(unbinder != null) {
             unbinder.unbind();
@@ -135,7 +135,7 @@ In order to use Navigator, you need to add jitpack to your project root gradle:
 
 and add the compile dependency to your module level gradle.
 
-    compile 'com.github.Zhuinden:navigator:0.1.2'
+    compile 'com.github.Zhuinden:navigator:0.1.3'
 
 ## License
 

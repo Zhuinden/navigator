@@ -1,5 +1,9 @@
 # Change log
 
+Navigator 0.1.3 (2017-03-14)
+---------------------------------
+- Added `ViewController.onActivityPaused()`, `ViewController.onActivityResumed()`, `ViewController.onActivityStopped()`, `ViewController.onActivityStarted()`
+
 Navigator 0.1.2 (2017-03-13)
 ---------------------------------
 - Added `Installer.setDeferredInitialization()` and `Navigator.executeDeferredInitialization()` to allow accessing `Backstack` before initial state change
