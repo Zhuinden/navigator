@@ -1,5 +1,9 @@
 # Change log
 
+Navigator 0.1.4 (2017-03-17)
+---------------------------------
+- Breaking change: `provideViewController(Object...)` is now `createViewController()`
+
 Navigator 0.1.3 (2017-03-14)
 ---------------------------------
 - Added `ViewController.onActivityPaused()`, `ViewController.onActivityResumed()`, `ViewController.onActivityStopped()`, `ViewController.onActivityStarted()`

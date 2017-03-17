@@ -20,11 +20,11 @@ public abstract class SecondKey
 
     @Override
     public int layout() {
-        return R.layout.fragment_second;
+        return R.layout.path_second;
     }
 
     @Override
-    public ViewController provideViewController(Object... args) {
+    public ViewController createViewController() {
         return new SecondController(this);
     }
 

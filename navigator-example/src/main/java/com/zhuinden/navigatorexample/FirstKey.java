@@ -19,11 +19,11 @@ public abstract class FirstKey
 
     @Override
     public int layout() {
-        return R.layout.fragment_first;
+        return R.layout.path_first;
     }
 
     @Override
-    public ViewController provideViewController(Object... args) {
+    public ViewController createViewController() {
         return new FirstController(this);
     }
 

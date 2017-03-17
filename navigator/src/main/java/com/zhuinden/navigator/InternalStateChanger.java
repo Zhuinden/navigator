@@ -68,7 +68,7 @@ class InternalStateChanger
                 }
 
                 StateKey newKey = stateChange.topNewState();
-                ViewController newController = newKey.provideViewController();
+                ViewController newController = newKey.createViewController();
                 Context newContext = stateChange.createContext(baseContextProvider.getBaseContext(), newKey);
                 final View newView = LayoutInflater.from(newContext).inflate(newKey.layout(), container, false);
                 ViewController.bind(newController, newView);
