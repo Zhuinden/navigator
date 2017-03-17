@@ -1,5 +1,9 @@
 # Change log
 
+Navigator 0.1.5 (2017-03-17)
+---------------------------------
+- Removed `service-tree` compile dependency, it's not used yet after all.
+
 Navigator 0.1.4 (2017-03-17)
 ---------------------------------
 - Breaking change: `provideViewController(Object...)` is now `createViewController()`
