@@ -12,8 +12,7 @@ Need to add:
 
 Need to decide:
 
-- `onPause()`/`onResume()` and `onStop()`/`onStart()` callbacks to view controller?
-- should I even *try* to add `onRequestPermission` and stuff? Conductor has it but it's magic
+- should I even *try* to add `onRequestPermissionResult` and `onActivityResult`? Conductor has it but it's magic
 
 ## Usage
 
