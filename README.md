@@ -102,7 +102,7 @@ public abstract class FirstKey
     }
 
     @Override
-    public ViewController provideViewController(Object... args) {
+    public ViewController createViewController() {
         return new FirstController(this);
     }
 
