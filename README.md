@@ -67,8 +67,8 @@ public class FirstController
     }
 
     @Override
-    protected void onViewRestored(View view) {
-        // this is called after view state (and controller state) is restored
+    protected void onStateRestored(View view) {
+        // this is called after view and controller state is restored
     }
 
     @Override
