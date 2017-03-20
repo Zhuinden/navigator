@@ -1,7 +1,6 @@
 package com.zhuinden.navigatorexample;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 
@@ -32,7 +31,7 @@ public class SecondController
     }
 
     @Override
-    protected void onViewRestored(View view) {
+    protected void onStateRestored(View view) {
         Log.i("SECOND", "Restored state of [" + view + "]");
     }
 
@@ -44,22 +43,17 @@ public class SecondController
     }
 
     @Override
-    protected void preViewSaveState(View view) {
+    protected void preSaveState(View view) {
         Log.i("SECOND", "Saving state of [" + view + "]");
     }
 
-    @NonNull
     @Override
-    public StateBundle toBundle() {
-        StateBundle stateBundle = new StateBundle();
-        stateBundle.putString("HELLO", "WORLD");
-        return stateBundle;
+    protected void onSaveControllerState(@NonNull StateBundle bundle) {
+        bundle.putString("HELLO", "WORLD");
     }
 
     @Override
-    public void fromBundle(@Nullable StateBundle bundle) {
-        if(bundle != null) {
-            Log.i("SECOND", bundle.getString("HELLO"));
-        }
+    protected void onRestoreControllerState(@NonNull StateBundle bundle) {
+        Log.i("SECOND", bundle.getString("HELLO"));
     }
 }

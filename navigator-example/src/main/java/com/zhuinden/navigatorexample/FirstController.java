@@ -1,14 +1,12 @@
 package com.zhuinden.navigatorexample;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 
 import com.zhuinden.navigator.Navigator;
 import com.zhuinden.navigator.StateKey;
 import com.zhuinden.navigator.ViewController;
-import com.zhuinden.simplestack.Bundleable;
 import com.zhuinden.statebundle.StateBundle;
 
 import butterknife.ButterKnife;
@@ -20,8 +18,7 @@ import butterknife.Unbinder;
  */
 
 public class FirstController
-        extends ViewController
-        implements Bundleable {
+        extends ViewController {
     public FirstController(StateKey stateKey) {
         super(stateKey);
     }
@@ -39,7 +36,7 @@ public class FirstController
     }
 
     @Override
-    protected void onViewRestored(View view) {
+    protected void onStateRestored(View view) {
         Log.i("FIRST", "Restored state of [" + view + "]");
     }
 
@@ -51,22 +48,17 @@ public class FirstController
     }
 
     @Override
-    protected void preViewSaveState(View view) {
+    protected void preSaveState(View view) {
         Log.i("FIRST", "Saving state of [" + view + "]");
     }
 
-    @NonNull
     @Override
-    public StateBundle toBundle() {
-        StateBundle stateBundle = new StateBundle();
-        stateBundle.putString("HELLO", "WORLD");
-        return stateBundle;
+    protected void onSaveControllerState(@NonNull StateBundle bundle) {
+        bundle.putString("HELLO", "WORLD");
     }
 
     @Override
-    public void fromBundle(@Nullable StateBundle bundle) {
-        if(bundle != null) {
-            Log.i("FIRST", bundle.getString("HELLO"));
-        }
+    protected void onRestoreControllerState(@NonNull StateBundle bundle) {
+        Log.i("FIRST", bundle.getString("HELLO"));
     }
 }

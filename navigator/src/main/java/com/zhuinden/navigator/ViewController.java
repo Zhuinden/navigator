@@ -15,10 +15,13 @@
  */
 package com.zhuinden.navigator;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.zhuinden.simplestack.BackstackManager;
 import com.zhuinden.simplestack.Bundleable;
+import com.zhuinden.statebundle.StateBundle;
 
 /**
  * You need to extend this class.
@@ -29,7 +32,8 @@ import com.zhuinden.simplestack.Bundleable;
  *
  * Created by Zhuinden on 2017.03.11..
  */
-public abstract class ViewController {
+public abstract class ViewController
+        implements Bundleable {
     private StateKey stateKey;
 
     public ViewController(StateKey stateKey) {
@@ -43,9 +47,9 @@ public abstract class ViewController {
 
     protected abstract void onViewCreated(View view);
 
-    protected abstract void onViewRestored(View view);
+    protected abstract void onStateRestored(View view);
 
-    protected void preViewSaveState(View view) {
+    protected void preSaveState(View view) {
     }
 
     protected abstract void onViewDestroyed(View view);
@@ -80,19 +84,37 @@ public abstract class ViewController {
 
     static void persistState(BackstackManager backstackManager, View view) {
         ViewController viewController = get(view);
-        viewController.preViewSaveState(view);
+        viewController.preSaveState(view);
         backstackManager.persistViewToState(view);
-        if(viewController instanceof Bundleable) {
-            backstackManager.getSavedState(viewController.getKey()).setBundle(((Bundleable) viewController).toBundle());
-        }
+        backstackManager.getSavedState(viewController.getKey()).setBundle((viewController).toBundle());
     }
 
     static void restoreState(BackstackManager backstackManager, View view) {
         ViewController viewController = get(view);
         backstackManager.restoreViewFromState(view);
-        if(viewController instanceof Bundleable) {
-            ((Bundleable) viewController).fromBundle(backstackManager.getSavedState(viewController.getKey()).getBundle());
+        viewController.fromBundle(backstackManager.getSavedState(viewController.getKey()).getBundle());
+        viewController.onStateRestored(view);
+    }
+
+    protected void onSaveControllerState(@NonNull StateBundle bundle) {
+
+    }
+
+    protected void onRestoreControllerState(@NonNull StateBundle bundle) {
+    }
+
+    @NonNull
+    @Override
+    public final StateBundle toBundle() {
+        StateBundle stateBundle = new StateBundle();
+        onSaveControllerState(stateBundle);
+        return stateBundle;
+    }
+
+    @Override
+    public final void fromBundle(@Nullable StateBundle bundle) {
+        if(bundle != null) {
+            onRestoreControllerState(bundle);
         }
-        viewController.onViewRestored(view);
     }
 }

@@ -1,5 +1,12 @@
 # Change log
 
+Navigator 0.1.6 (2017-03-20)
+---------------------------------
+- ViewController is now Bundleable by default, its methods are final
+- add `onSaveControllerState()` and `onRestoreControllerState()` methods
+- rename `onViewRestored()` to `onStateRestored()`
+- rename `preSaveViewState()` to `preSaveState()`
+
 Navigator 0.1.5 (2017-03-17)
 ---------------------------------
 - Removed `service-tree` compile dependency, it's not used yet after all.
