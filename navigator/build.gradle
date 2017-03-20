@@ -26,7 +26,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:support-annotations:24.1.1'
-    compile 'com.github.Zhuinden:simple-stack:1.4.1'
+    compile 'com.github.Zhuinden:simple-stack:1.4.2'
     //compile 'com.github.Zhuinden:service-tree:1.0.6' // not used yet
     testCompile 'junit:junit:4.12'
     testCompile 'org.assertj:assertj-core:1.7.1'
