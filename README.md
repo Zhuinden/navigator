@@ -48,8 +48,7 @@ public class MainActivity
 
 ``` java
 public class FirstController
-        extends ViewController
-        implements Bundleable {
+        extends ViewController {
     public FirstController(StateKey stateKey) {
         super(stateKey);
     }
@@ -79,8 +78,6 @@ public class FirstController
             unbinder.unbind();
         }
     }
-
-    /* toBundle(), fromBundle() */
 }
 ```
 
@@ -134,7 +131,7 @@ In order to use Navigator, you need to add jitpack to your project root gradle:
 
 and add the compile dependency to your module level gradle.
 
-    compile 'com.github.Zhuinden:navigator:0.1.5'
+    compile 'com.github.Zhuinden:navigator:0.1.6'
 
 ## License
 
