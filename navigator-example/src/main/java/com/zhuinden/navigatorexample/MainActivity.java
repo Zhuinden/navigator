@@ -28,6 +28,7 @@ public class MainActivity
         ButterKnife.bind(this);
 
         Navigator.configure() //
+                .setLayoutInflationStrategy(new AsyncLayoutInflationStrategy())
                 .setStateChanger(this) //
                 .setDeferredInitialization(true)
                 .install(this, root, HistoryBuilder.single(FirstKey.create()));

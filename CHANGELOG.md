@@ -1,5 +1,9 @@
 # Change log
 
+Navigator 0.X.X (2017-03-XX)
+---------------------------------
+- Added `LayoutInflationStrategy` to allow asynchronous inflation of views
+
 Navigator 0.1.6 (2017-03-20)
 ---------------------------------
 - ViewController is now Bundleable by default, its methods are final

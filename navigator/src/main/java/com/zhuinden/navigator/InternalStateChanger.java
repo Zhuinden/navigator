@@ -16,7 +16,7 @@
 package com.zhuinden.navigator;
 
 import android.content.Context;
-import android.view.LayoutInflater;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -39,13 +39,17 @@ class InternalStateChanger
         }
     }
 
+    private static final NoOpViewChangeHandler NOOP_VIEW_CHANGE_HANDLER = new NoOpViewChangeHandler();
+
     private BaseContextProvider baseContextProvider;
+    private LayoutInflationStrategy layoutInflationStrategy;
     private StateChanger externalStateChanger;
     private BackstackManager backstackManager;
     private ViewGroup container;
 
-    InternalStateChanger(BaseContextProvider baseContextProvider, StateChanger externalStateChanger, BackstackManager backstackManager, ViewGroup container) {
+    InternalStateChanger(BaseContextProvider baseContextProvider, LayoutInflationStrategy layoutInflationStrategy, StateChanger externalStateChanger, BackstackManager backstackManager, ViewGroup container) {
         this.baseContextProvider = baseContextProvider;
+        this.layoutInflationStrategy = layoutInflationStrategy;
         this.externalStateChanger = externalStateChanger;
         this.backstackManager = backstackManager;
         this.container = container;
@@ -60,43 +64,50 @@ class InternalStateChanger
                     completionCallback.stateChangeComplete();
                     return;
                 }
-                StateKey previousKey = stateChange.topPreviousState();
+                final StateKey previousKey = stateChange.topPreviousState();
                 final View previousView = container.getChildAt(0);
                 if(previousView != null && previousKey != null) {
                     ViewController.persistState(backstackManager, previousView);
                     ViewController.unbind(previousView);
                 }
 
-                StateKey newKey = stateChange.topNewState();
-                ViewController newController = newKey.createViewController();
-                Context newContext = stateChange.createContext(baseContextProvider.getBaseContext(), newKey);
-                final View newView = LayoutInflater.from(newContext).inflate(newKey.layout(), container, false);
-                ViewController.bind(newController, newView);
-                ViewController.restoreState(backstackManager, newView);
+                final StateKey newKey = stateChange.topNewState();
+                final ViewController newController = newKey.createViewController();
+                final Context newContext = stateChange.createContext(baseContextProvider.getBaseContext(), newKey);
+                layoutInflationStrategy.inflateView(newContext,
+                        newKey.layout(),
+                        container,
+                        new LayoutInflationStrategy.InflationCallback() {
+                            @Override
+                            public void onViewInflated(@NonNull final View newView) {
+                                ViewController.bind(newController, newView);
+                                ViewController.restoreState(backstackManager, newView);
 
-                if(previousView == null) {
-                    container.addView(newView);
-                    finishStateChange(completionCallback);
-                } else {
-                    final ViewChangeHandler viewChangeHandler;
-                    if(stateChange.getDirection() == StateChange.FORWARD) {
-                        viewChangeHandler = newKey.getViewChangeHandler();
-                    } else if(previousKey != null && stateChange.getDirection() == StateChange.BACKWARD) {
-                        viewChangeHandler = previousKey.getViewChangeHandler();
-                    } else {
-                        viewChangeHandler = new NoOpViewChangeHandler();
-                    }
-                    viewChangeHandler.performViewChange(container,
-                            previousView,
-                            newView,
-                            stateChange.getDirection(),
-                            new ViewChangeHandler.CompletionCallback() {
-                                @Override
-                                public void onCompleted() {
+                                if(previousView == null) {
+                                    container.addView(newView);
                                     finishStateChange(completionCallback);
+                                } else {
+                                    final ViewChangeHandler viewChangeHandler;
+                                    if(stateChange.getDirection() == StateChange.FORWARD) {
+                                        viewChangeHandler = newKey.getViewChangeHandler();
+                                    } else if(previousKey != null && stateChange.getDirection() == StateChange.BACKWARD) {
+                                        viewChangeHandler = previousKey.getViewChangeHandler();
+                                    } else {
+                                        viewChangeHandler = NOOP_VIEW_CHANGE_HANDLER;
+                                    }
+                                    viewChangeHandler.performViewChange(container,
+                                            previousView,
+                                            newView,
+                                            stateChange.getDirection(),
+                                            new ViewChangeHandler.CompletionCallback() {
+                                                @Override
+                                                public void onCompleted() {
+                                                    finishStateChange(completionCallback);
+                                                }
+                                            });
                                 }
-                            });
-                }
+                    }
+                        });
             }
         });
     }

@@ -45,6 +45,7 @@ public final class BackstackHost
     StateChanger externalStateChanger;
     KeyParceler keyParceler;
     BackstackManager.StateClearStrategy stateClearStrategy;
+    LayoutInflationStrategy layoutInflationStrategy;
 
     BackstackManager backstackManager;
 
@@ -72,7 +73,11 @@ public final class BackstackHost
             }
         }
         if(!isInitializeDeferred) {
-            internalStateChanger = new InternalStateChanger(this, externalStateChanger, backstackManager, container);
+            internalStateChanger = new InternalStateChanger(this,
+                    layoutInflationStrategy,
+                    externalStateChanger,
+                    backstackManager,
+                    container);
             backstackManager.setStateChanger(internalStateChanger);
         }
     }

@@ -36,6 +36,7 @@ public class Navigator {
         StateChanger stateChanger = new InternalStateChanger.NoOpStateChanger();
         BackstackManager.StateClearStrategy stateClearStrategy = new DefaultStateClearStrategy();
         KeyParceler keyParceler = new DefaultKeyParceler();
+        LayoutInflationStrategy layoutInflationStrategy = new DefaultLayoutInflationStrategy();
         boolean isInitializeDeferred = false;
 
         public Installer setStateChanger(@NonNull StateChanger stateChanger) {
@@ -59,6 +60,14 @@ public class Navigator {
                 throw new IllegalArgumentException("If set, StateClearStrategy cannot be null!");
             }
             this.stateClearStrategy = stateClearStrategy;
+            return this;
+        }
+
+        public Installer setLayoutInflationStrategy(@NonNull LayoutInflationStrategy layoutInflationStrategy) {
+            if(layoutInflationStrategy == null) {
+                throw new IllegalArgumentException("If set, LayoutInflationStrategy cannot be null!");
+            }
+            this.layoutInflationStrategy = layoutInflationStrategy;
             return this;
         }
 
@@ -102,6 +111,7 @@ public class Navigator {
         backstackHost.externalStateChanger = installer.stateChanger;
         backstackHost.keyParceler = installer.keyParceler;
         backstackHost.stateClearStrategy = installer.stateClearStrategy;
+        backstackHost.layoutInflationStrategy = installer.layoutInflationStrategy;
         backstackHost.initialKeys = initialKeys;
         backstackHost.container = container;
         backstackHost.initialize(installer.isInitializeDeferred);
