@@ -27,8 +27,6 @@ public abstract class StateKey {
     @LayoutRes
     public abstract int layout();
 
-    public abstract ViewController createViewController();
-
     public ViewChangeHandler getViewChangeHandler() {
         return new SegueViewChangeHandler();
     }

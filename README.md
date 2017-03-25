@@ -2,17 +2,7 @@
 
 A wrapper around [**simple-stack**](https://github.com/Zhuinden/simple-stack) to simplify navigation.
 
-## BETA
-
-Need to add:
-
-- multi-stack support (again)
-- child stacks + proper back navigation for them
-- service tree integration
-
-Need to decide:
-
-- should I even *try* to add `onRequestPermissionResult` and `onActivityResult`? Conductor has it but it's magic
+It uses retained fragment as lifecycle listener instead of the `BackstackDelegate`, therefore Min SDK 11+ is required.
 
 ## Usage
 
@@ -33,6 +23,7 @@ public class MainActivity
         ButterKnife.bind(this);
 
         Navigator.install(this, root, HistoryBuilder.single(FirstKey.create()));
+        // additional configuration possible with `Navigator.configure()...install()`
     }
 
     @Override
@@ -44,13 +35,38 @@ public class MainActivity
 }
 ```
 
-- **ViewController**
+- **Custom Viewgroup**
 
 ``` java
-public class FirstController
-        extends ViewController {
-    public FirstController(StateKey stateKey) {
-        super(stateKey);
+public class FirstView
+        extends LinearLayout
+        implements Bundleable {
+
+    public FirstView(Context context) {
+        super(context);
+        init(context);
+    }
+
+    public FirstView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init(context);
+    }
+
+    public FirstView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init(context);
+    }
+
+    @TargetApi(21)
+    public FirstView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+        init(context);
+    }
+
+    private void init(Context context) {
+        if(!isInEditMode()) {
+            // ...
+        }
     }
 
     @OnClick(R.id.first_button)
@@ -58,24 +74,24 @@ public class FirstController
         Navigator.getBackstack(view.getContext()).goTo(SecondKey.create());
     }
 
-    Unbinder unbinder;
-
     @Override
-    protected void onViewCreated(View view) {
-        // this is called after inflation
-        unbinder = ButterKnife.bind(this, view);
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        ButterKnife.bind(this);
+    }
+
+    @NonNull
+    @Override
+    public StateBundle toBundle() {
+        StateBundle bundle = new StateBundle();
+        bundle.putString("HELLO", "WORLD");
+        return bundle;
     }
 
     @Override
-    protected void onStateRestored(View view) {
-        // this is called after view and controller state is restored
-    }
-
-    @Override
-    protected void onViewDestroyed(View view) {
-        // this is called when view hierarchy is destroyed, or controller is replaced
-        if(unbinder != null) {
-            unbinder.unbind();
+    public void fromBundle(@Nullable StateBundle bundle) {
+        if(bundle != null) {
+            Log.i("FIRST", bundle.getString("HELLO"));
         }
     }
 }
@@ -95,11 +111,6 @@ public abstract class FirstKey
     @Override
     public int layout() {
         return R.layout.path_first;
-    }
-
-    @Override
-    public ViewController createViewController() {
-        return new FirstController(this);
     }
 
     @Override
@@ -131,7 +142,7 @@ In order to use Navigator, you need to add jitpack to your project root gradle:
 
 and add the compile dependency to your module level gradle.
 
-    compile 'com.github.Zhuinden:navigator:0.1.6'
+    compile 'com.github.Zhuinden:navigator:0.2.0'
 
 ## License
 

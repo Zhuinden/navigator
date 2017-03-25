@@ -4,7 +4,6 @@ import android.os.Parcelable;
 
 import com.google.auto.value.AutoValue;
 import com.zhuinden.navigator.ViewChangeHandler;
-import com.zhuinden.navigator.ViewController;
 
 /**
  * Created by Zhuinden on 2017.03.10..
@@ -20,11 +19,6 @@ public abstract class FirstKey
     @Override
     public int layout() {
         return R.layout.path_first;
-    }
-
-    @Override
-    public ViewController createViewController() {
-        return new FirstController(this);
     }
 
     @Override

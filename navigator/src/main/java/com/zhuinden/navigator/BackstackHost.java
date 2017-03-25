@@ -16,7 +16,6 @@
 package com.zhuinden.navigator;
 
 import android.app.Fragment;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.ViewGroup;
 
@@ -35,8 +34,7 @@ import java.util.List;
  * Created by Zhuinden on 2017.03.11..
  */
 public final class BackstackHost
-        extends Fragment
-        implements BaseContextProvider {
+        extends Fragment {
 
     public BackstackHost() {
         setRetainInstance(true);
@@ -72,64 +70,39 @@ public final class BackstackHost
             }
         }
         if(!isInitializeDeferred) {
-            internalStateChanger = new InternalStateChanger(this, externalStateChanger, backstackManager, container);
+            internalStateChanger = new InternalStateChanger(getActivity(), externalStateChanger, container);
             backstackManager.setStateChanger(internalStateChanger);
         }
     }
 
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        ViewController.persistState(backstackManager, container.getChildAt(0));
+        Navigator.persistState(container.getChildAt(0));
         outState.putParcelable("NAVIGATOR_STATE_BUNDLE", backstackManager.toBundle());
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        currentViewController().onActivityStarted();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         backstackManager.reattachStateChanger();
-        currentViewController().onActivityResumed();
     }
 
     @Override
     public void onPause() {
-        currentViewController().onActivityPaused();
         backstackManager.detachStateChanger();
         super.onPause();
     }
 
     @Override
-    public void onStop() {
-        currentViewController().onActivityStopped();
-        super.onStop();
-    }
-
-    @Override
     public void onDestroyView() {
         backstackManager.getBackstack().executePendingStateChange();
-        ViewController.unbind(container.getChildAt(0));
         internalStateChanger = null;
         container = null;
         super.onDestroyView();
     }
 
-    private ViewController currentViewController() {
-        return ViewController.get(container.getChildAt(0));
-    }
-
     public Backstack getBackstack() {
         return backstackManager.getBackstack();
-    }
-
-    @Override
-    public Context getBaseContext() {
-        return getActivity();
     }
 }

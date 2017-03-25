@@ -21,7 +21,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.zhuinden.navigator.changehandlers.NoOpViewChangeHandler;
-import com.zhuinden.simplestack.BackstackManager;
 import com.zhuinden.simplestack.StateChange;
 import com.zhuinden.simplestack.StateChanger;
 
@@ -39,15 +38,13 @@ class InternalStateChanger
         }
     }
 
-    private BaseContextProvider baseContextProvider;
+    private Context baseContext;
     private StateChanger externalStateChanger;
-    private BackstackManager backstackManager;
     private ViewGroup container;
 
-    InternalStateChanger(BaseContextProvider baseContextProvider, StateChanger externalStateChanger, BackstackManager backstackManager, ViewGroup container) {
-        this.baseContextProvider = baseContextProvider;
+    InternalStateChanger(Context baseContext, StateChanger externalStateChanger, ViewGroup container) {
+        this.baseContext = baseContext;
         this.externalStateChanger = externalStateChanger;
-        this.backstackManager = backstackManager;
         this.container = container;
     }
 
@@ -63,16 +60,12 @@ class InternalStateChanger
                 StateKey previousKey = stateChange.topPreviousState();
                 final View previousView = container.getChildAt(0);
                 if(previousView != null && previousKey != null) {
-                    ViewController.persistState(backstackManager, previousView);
-                    ViewController.unbind(previousView);
+                    Navigator.persistState(previousView);
                 }
-
                 StateKey newKey = stateChange.topNewState();
-                ViewController newController = newKey.createViewController();
-                Context newContext = stateChange.createContext(baseContextProvider.getBaseContext(), newKey);
+                Context newContext = stateChange.createContext(baseContext, newKey);
                 final View newView = LayoutInflater.from(newContext).inflate(newKey.layout(), container, false);
-                ViewController.bind(newController, newView);
-                ViewController.restoreState(backstackManager, newView);
+                Navigator.restoreState(newView);
 
                 if(previousView == null) {
                     container.addView(newView);

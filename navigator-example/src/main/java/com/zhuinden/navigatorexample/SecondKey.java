@@ -4,7 +4,6 @@ import android.os.Parcelable;
 
 import com.google.auto.value.AutoValue;
 import com.zhuinden.navigator.ViewChangeHandler;
-import com.zhuinden.navigator.ViewController;
 import com.zhuinden.navigator.changehandlers.SegueViewChangeHandler;
 
 /**
@@ -21,11 +20,6 @@ public abstract class SecondKey
     @Override
     public int layout() {
         return R.layout.path_second;
-    }
-
-    @Override
-    public ViewController createViewController() {
-        return new SecondController(this);
     }
 
     @Override

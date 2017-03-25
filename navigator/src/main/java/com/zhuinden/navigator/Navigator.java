@@ -20,6 +20,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.zhuinden.simplestack.Backstack;
@@ -27,6 +29,7 @@ import com.zhuinden.simplestack.BackstackManager;
 import com.zhuinden.simplestack.DefaultKeyParceler;
 import com.zhuinden.simplestack.DefaultStateClearStrategy;
 import com.zhuinden.simplestack.KeyParceler;
+import com.zhuinden.simplestack.SavedState;
 import com.zhuinden.simplestack.StateChanger;
 
 import java.util.List;
@@ -112,6 +115,43 @@ public class Navigator {
         backstackHost.initialize(false);
     }
 
+    public static Backstack getBackstack(Context context) {
+        BackstackHost backstackHost = getBackstackHost(context);
+        return backstackHost.getBackstack();
+    }
+
+    public static boolean onBackPressed(Activity activity) {
+        return getBackstack(activity).goBack();
+    }
+
+    public static void persistState(@Nullable View view) {
+        if(view != null) {
+            Context context = view.getContext();
+            BackstackHost backstackHost = getBackstackHost(context);
+            backstackHost.backstackManager.persistViewToState(view);
+        }
+    }
+
+    public static void restoreState(@NonNull View view) {
+        if(view == null) {
+            throw new NullPointerException("You cannot restore state into null view!");
+        }
+        Context context = view.getContext();
+        BackstackHost backstackHost = getBackstackHost(context);
+        backstackHost.backstackManager.restoreViewFromState(view);
+    }
+
+    public static SavedState getSavedState(@NonNull Context context, @NonNull StateKey stateKey) {
+        if(context == null) {
+            throw new NullPointerException("context cannot be null");
+        }
+        if(stateKey == null) {
+            throw new NullPointerException("stateKey cannot be null");
+        }
+        BackstackHost backstackHost = getBackstackHost(context);
+        return backstackHost.backstackManager.getSavedState(stateKey);
+    }
+
     private static BackstackHost findBackstackHost(Activity activity) {
         return (BackstackHost) activity.getFragmentManager().findFragmentByTag("NAVIGATOR_BACKSTACK_HOST");
     }
@@ -129,13 +169,8 @@ public class Navigator {
         }
     }
 
-    public static Backstack getBackstack(Context context) {
+    private static BackstackHost getBackstackHost(Context context) {
         Activity activity = findActivity(context);
-        BackstackHost backstackHost = findBackstackHost(activity);
-        return backstackHost.getBackstack();
-    }
-
-    public static boolean onBackPressed(Activity activity) {
-        return getBackstack(activity).goBack();
+        return findBackstackHost(activity);
     }
 }

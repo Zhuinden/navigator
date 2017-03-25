@@ -1,5 +1,9 @@
 # Change log
 
+Navigator 0.2.0 (2017-03-25)
+---------------------------------
+- Breaking change: Killed ViewControllers entirely, Navigator's internal state changer relies on custom viewgroups instead.
+
 Navigator 0.1.6 (2017-03-20)
 ---------------------------------
 - ViewController is now Bundleable by default, its methods are final
