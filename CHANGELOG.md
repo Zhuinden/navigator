@@ -1,5 +1,9 @@
 # Change log
 
+Navigator 0.2.1 (2017-03-25)
+---------------------------------
+- Update simple-stack to 1.4.3.
+
 Navigator 0.2.0 (2017-03-25)
 ---------------------------------
 - Breaking change: Killed ViewControllers entirely, Navigator's internal state changer relies on custom viewgroups instead.
