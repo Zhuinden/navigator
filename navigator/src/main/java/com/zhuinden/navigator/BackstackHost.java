@@ -59,7 +59,7 @@ public final class BackstackHost
         this.savedInstanceState = savedInstanceState;
     }
 
-    void initialize(boolean isInitializeDeferred) {
+    Backstack initialize(boolean isInitializeDeferred) {
         if(backstackManager == null) {
             backstackManager = new BackstackManager();
             backstackManager.setKeyParceler(keyParceler);
@@ -73,6 +73,7 @@ public final class BackstackHost
             internalStateChanger = new InternalStateChanger(getActivity(), externalStateChanger, container);
             backstackManager.setStateChanger(internalStateChanger);
         }
+        return backstackManager.getBackstack();
     }
 
     @Override

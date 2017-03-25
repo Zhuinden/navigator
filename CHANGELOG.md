@@ -1,5 +1,9 @@
 # Change log
 
+Navigator X.X.X (2017-XX-XX)
+---------------------------------
+- `Navigator.install()` returns `Backstack` (which functions as a router)
+
 Navigator 0.2.1 (2017-03-25)
 ---------------------------------
 - Update simple-stack to 1.4.3.

@@ -70,8 +70,8 @@ public class Navigator {
             return this;
         }
 
-        public void install(@NonNull Activity activity, @NonNull ViewGroup container, @NonNull List<Object> initialKeys) {
-            Navigator.install(this, activity, container, initialKeys);
+        public Backstack install(@NonNull Activity activity, @NonNull ViewGroup container, @NonNull List<Object> initialKeys) {
+            return Navigator.install(this, activity, container, initialKeys);
         }
     }
 
@@ -86,7 +86,7 @@ public class Navigator {
         install(configure(), activity, container, initialKeys);
     }
 
-    private static void install(Installer installer, @NonNull Activity activity, @NonNull ViewGroup container, @NonNull List<Object> initialKeys) {
+    private static Backstack install(Installer installer, @NonNull Activity activity, @NonNull ViewGroup container, @NonNull List<Object> initialKeys) {
         if(activity == null) {
             throw new IllegalArgumentException("Activity cannot be null!");
         }
@@ -107,7 +107,7 @@ public class Navigator {
         backstackHost.stateClearStrategy = installer.stateClearStrategy;
         backstackHost.initialKeys = initialKeys;
         backstackHost.container = container;
-        backstackHost.initialize(installer.isInitializeDeferred);
+        return backstackHost.initialize(installer.isInitializeDeferred);
     }
 
     public static void executeDeferredInitialization(Activity activity) {

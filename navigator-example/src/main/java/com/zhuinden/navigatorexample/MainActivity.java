@@ -27,14 +27,13 @@ public class MainActivity
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        Navigator.configure() //
+        Backstack backstack = Navigator.configure() //
                 .setStateChanger(this) //
                 .setDeferredInitialization(true)
                 .install(this, root, HistoryBuilder.single(FirstKey.create()));
 
         // if init is deferred, you can do whatever you want with the backstack
         // but then the initialization must be started explicitly
-        Backstack backstack = Navigator.getBackstack(this);
 
         Navigator.executeDeferredInitialization(this);
     }
