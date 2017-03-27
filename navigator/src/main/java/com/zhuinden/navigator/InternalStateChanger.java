@@ -30,6 +30,8 @@ import com.zhuinden.simplestack.StateChanger;
 
 class InternalStateChanger
         implements StateChanger {
+    private static final NoOpViewChangeHandler NO_OP_VIEW_CHANGE_HANDLER = new NoOpViewChangeHandler();
+
     static class NoOpStateChanger
             implements StateChanger {
         @Override
@@ -60,12 +62,12 @@ class InternalStateChanger
                 StateKey previousKey = stateChange.topPreviousState();
                 final View previousView = container.getChildAt(0);
                 if(previousView != null && previousKey != null) {
-                    Navigator.persistState(previousView);
+                    Navigator.persistViewToState(previousView);
                 }
                 StateKey newKey = stateChange.topNewState();
                 Context newContext = stateChange.createContext(baseContext, newKey);
                 final View newView = LayoutInflater.from(newContext).inflate(newKey.layout(), container, false);
-                Navigator.restoreState(newView);
+                Navigator.restoreViewFromState(newView);
 
                 if(previousView == null) {
                     container.addView(newView);
@@ -77,7 +79,7 @@ class InternalStateChanger
                     } else if(previousKey != null && stateChange.getDirection() == StateChange.BACKWARD) {
                         viewChangeHandler = previousKey.getViewChangeHandler();
                     } else {
-                        viewChangeHandler = new NoOpViewChangeHandler();
+                        viewChangeHandler = NO_OP_VIEW_CHANGE_HANDLER;
                     }
                     viewChangeHandler.performViewChange(container,
                             previousView,

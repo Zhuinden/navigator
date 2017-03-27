@@ -124,7 +124,7 @@ public class Navigator {
         return getBackstack(activity).goBack();
     }
 
-    public static void persistState(@Nullable View view) {
+    public static void persistViewToState(@Nullable View view) {
         if(view != null) {
             Context context = view.getContext();
             BackstackHost backstackHost = getBackstackHost(context);
@@ -132,7 +132,7 @@ public class Navigator {
         }
     }
 
-    public static void restoreState(@NonNull View view) {
+    public static void restoreViewFromState(@NonNull View view) {
         if(view == null) {
             throw new NullPointerException("You cannot restore state into null view!");
         }

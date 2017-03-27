@@ -1,8 +1,9 @@
 # Change log
 
-Navigator X.X.X (2017-XX-XX)
+Navigator 0.2.2 (2017-03-26)
 ---------------------------------
 - `Navigator.install()` returns `Backstack` (which functions as a router)
+- `Navigator.persistState()` => `Navigator.persistViewToState()`, `Navigator.restoreState()` => `Navigator.restoreViewFromState()`
 
 Navigator 0.2.1 (2017-03-25)
 ---------------------------------

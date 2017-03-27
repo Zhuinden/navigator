@@ -79,7 +79,7 @@ public final class BackstackHost
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Navigator.persistState(container.getChildAt(0));
+        Navigator.persistViewToState(container.getChildAt(0));
         outState.putParcelable("NAVIGATOR_STATE_BUNDLE", backstackManager.toBundle());
     }
 

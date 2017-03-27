@@ -142,7 +142,7 @@ In order to use Navigator, you need to add jitpack to your project root gradle:
 
 and add the compile dependency to your module level gradle.
 
-    compile 'com.github.Zhuinden:navigator:0.2.1'
+    compile 'com.github.Zhuinden:navigator:0.2.2'
 
 ## License
 
