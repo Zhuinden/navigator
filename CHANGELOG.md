@@ -1,5 +1,9 @@
 # Change log
 
+Navigator 0.3.2 (2017-03-27)
+---------------------------------
+- Fix a javadoc error.
+
 Navigator 0.3.1 (2017-03-27)
 ---------------------------------
 - Added `ViewChangeCompletionListener` to `DefaultStateChanger` in case it's important to know when the view change has been completed.
