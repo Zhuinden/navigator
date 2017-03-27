@@ -137,7 +137,7 @@ public class Navigator {
     /**
      * Installs the {@link Navigator} with default parameters.
      *
-     * This means that {@link DefaultStateChanger} and {@link DefaultStateClearStrategy} are used.
+     * This means that {@link DefaultStateChanger} and DefaultStateClearStrategy are used.
      *
      * @param activity the activity which will host the backstack
      * @param container the container in which custom viewgroups are hosted (to save its child's state in onSaveInstanceState())
