@@ -41,17 +41,52 @@ public class DefaultStateChanger
         }
     }
 
+    private static class NoOpViewChangeCompletionListener implements ViewChangeCompletionListener {
+        @Override
+        public void handleViewChangeComplete(@NonNull StateChange stateChange, @NonNull ViewGroup container, @Nullable View previousView, @NonNull View newView, @NonNull Callback completionCallback) {
+            completionCallback.viewChangeComplete();
+        }
+    }
+
+    /**
+     * Allows the possibility of listening to when the view change is completed.
+     */
+    public interface ViewChangeCompletionListener {
+        /**
+         * Notifies the {@link DefaultStateChanger} that the view change completion listener completed its callback.
+         */
+        public interface Callback {
+            void viewChangeComplete();
+        }
+
+        /**
+         * Called when a view change is completed.
+         *
+         * @param stateChange the state change
+         * @param container the container
+         * @param previousView the previous view
+         * @param newView the new view
+         * @param completionCallback the completion callback that must be called once the view change callback is completed by the listener
+         */
+        void handleViewChangeComplete(@NonNull StateChange stateChange, @NonNull ViewGroup container, @Nullable View previousView, @NonNull View newView, @NonNull Callback completionCallback);
+    }
+
     private static final NoOpViewChangeHandler NO_OP_VIEW_CHANGE_HANDLER = new NoOpViewChangeHandler();
 
     private Context baseContext;
     private ViewGroup container;
     private StateChanger externalStateChanger;
+    private ViewChangeCompletionListener viewChangeCompletionListener;
 
     public DefaultStateChanger(@NonNull Context baseContext, @NonNull ViewGroup container) {
-        this(baseContext, container, null);
+        this(baseContext, container, null, null);
     }
 
     public DefaultStateChanger(@NonNull Context baseContext, @NonNull ViewGroup container, @Nullable StateChanger externalStateChanger) {
+        this(baseContext, container, externalStateChanger, null);
+    }
+
+    public DefaultStateChanger(@NonNull Context baseContext, @NonNull ViewGroup container, @Nullable StateChanger externalStateChanger, @Nullable ViewChangeCompletionListener viewChangeCompletionListener) {
         if(baseContext == null) {
             throw new NullPointerException("baseContext cannot be null");
         }
@@ -64,10 +99,19 @@ public class DefaultStateChanger
             externalStateChanger = new NoOpStateChanger();
         }
         this.externalStateChanger = externalStateChanger;
+        if(viewChangeCompletionListener == null) {
+            viewChangeCompletionListener = new NoOpViewChangeCompletionListener();
+        }
+        this.viewChangeCompletionListener = viewChangeCompletionListener;
     }
 
-    private void finishStateChange(Callback completionCallback) {
-        completionCallback.stateChangeComplete();
+    private void finishStateChange(StateChange stateChange, ViewGroup container, View previousView, View newView, final Callback completionCallback) {
+        viewChangeCompletionListener.handleViewChangeComplete(stateChange, container, previousView, newView, new ViewChangeCompletionListener.Callback() {
+            @Override
+            public void viewChangeComplete() {
+                completionCallback.stateChangeComplete();
+            }
+        });
     }
 
     @Override
@@ -91,7 +135,7 @@ public class DefaultStateChanger
 
                 if(previousView == null) {
                     container.addView(newView);
-                    finishStateChange(completionCallback);
+                    finishStateChange(stateChange, container, previousView, newView, completionCallback);
                 } else {
                     final ViewChangeHandler viewChangeHandler;
                     if(stateChange.getDirection() == StateChange.FORWARD) {
@@ -108,7 +152,7 @@ public class DefaultStateChanger
                             new ViewChangeHandler.CompletionCallback() {
                                 @Override
                                 public void onCompleted() {
-                                    finishStateChange(completionCallback);
+                                    finishStateChange(stateChange, container, previousView, newView, completionCallback);
                                 }
                             });
                 }

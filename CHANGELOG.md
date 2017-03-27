@@ -1,5 +1,10 @@
 # Change log
 
+Navigator 0.3.1 (2017-03-27)
+---------------------------------
+- Added `ViewChangeCompletionListener` to `DefaultStateChanger` in case it's important to know when the view change has been completed.
+- Ported over `simple-stack-example-mvp` and `simple-stack-example-nestedstack` to use Navigator
+
 Navigator 0.3.0 (2017-03-27)
 ---------------------------------
 - Breaking change: `StateKey` is now an interface, `getViewChangeHandler()` => `viewChangeHandler()`

@@ -1,1 +1,1 @@
-include ':navigator', ':navigator-example'
+include ':navigator', ':navigator-example', ':navigator-example-mvp', ':navigator-example-nestedstack'
