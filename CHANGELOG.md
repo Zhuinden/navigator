@@ -1,5 +1,15 @@
 # Change log
 
+Navigator 0.3.0 (2017-03-27)
+---------------------------------
+- Breaking change: `StateKey` is now an interface, `getViewChangeHandler()` => `viewChangeHandler()`
+- Breaking change: `Navigator` sets up a `DefaultStateChanger` (which is the old `InternalStateChanger` which is now public
+If Navigator is configured with a different state changer, then that state changer is used entirely.
+Navigator is primarily used as a means of replacing BackstackDelegate, but configurable to avoid its default behaviors.
+To obtain the behavior of previous InternalStateChanger, then `new DefaultStateChanger(context, container, externalStateChanger)` should be set.
+- Add: Javadocs.
+- Add: `DefaultStateChanger(Context, ViewGroup)` can be used with `ViewChangeHandler` to manage the navigation between views.
+
 Navigator 0.2.2 (2017-03-26)
 ---------------------------------
 - `Navigator.install()` returns `Backstack` (which functions as a router)

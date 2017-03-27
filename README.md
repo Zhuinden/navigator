@@ -102,8 +102,7 @@ public class FirstView
 ``` java
 @AutoValue
 public abstract class FirstKey
-        extends StateKey
-        implements Parcelable {
+        implements StateKey, Parcelable {
     public static FirstKey create() {
         return new AutoValue_FirstKey();
     }
@@ -114,7 +113,7 @@ public abstract class FirstKey
     }
 
     @Override
-    public ViewChangeHandler getViewChangeHandler() {
+    public ViewChangeHandler viewChangeHandler() {
         return new SegueViewChangeHandler();
     }
 }
@@ -142,7 +141,7 @@ In order to use Navigator, you need to add jitpack to your project root gradle:
 
 and add the compile dependency to your module level gradle.
 
-    compile 'com.github.Zhuinden:navigator:0.2.2'
+    compile 'com.github.Zhuinden:navigator:0.3.0'
 
 ## License
 

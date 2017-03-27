@@ -29,9 +29,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * This is public because it has to be.
- *
- * Created by Zhuinden on 2017.03.11..
+ * This is public because it has to be. It is responsible for the lifecycle integration of the Backstack.
  */
 public final class BackstackHost
         extends Fragment {
@@ -40,13 +38,11 @@ public final class BackstackHost
         setRetainInstance(true);
     }
 
-    StateChanger externalStateChanger;
+    StateChanger stateChanger;
     KeyParceler keyParceler;
     BackstackManager.StateClearStrategy stateClearStrategy;
 
     BackstackManager backstackManager;
-
-    InternalStateChanger internalStateChanger;
 
     List<Object> initialKeys = Collections.emptyList(); // should not stay empty list
     ViewGroup container;
@@ -70,8 +66,7 @@ public final class BackstackHost
             }
         }
         if(!isInitializeDeferred) {
-            internalStateChanger = new InternalStateChanger(getActivity(), externalStateChanger, container);
-            backstackManager.setStateChanger(internalStateChanger);
+            backstackManager.setStateChanger(stateChanger);
         }
         return backstackManager.getBackstack();
     }
@@ -98,7 +93,7 @@ public final class BackstackHost
     @Override
     public void onDestroyView() {
         backstackManager.getBackstack().executePendingStateChange();
-        internalStateChanger = null;
+        stateChanger = null;
         container = null;
         super.onDestroyView();
     }

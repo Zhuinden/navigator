@@ -24,9 +24,7 @@ import android.view.ViewGroup;
 import com.zhuinden.navigator.ViewChangeHandler;
 
 /**
- * Convenience class to support view animations using Animator.
- *
- * Created by Zhuinden on 2017.03.11..
+ * Convenience base class to support view animations using Animator.
  */
 public abstract class AnimatorViewChangeHandler
         implements ViewChangeHandler {

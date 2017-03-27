@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.RelativeLayout;
 
+import com.zhuinden.navigator.DefaultStateChanger;
 import com.zhuinden.navigator.Navigator;
 import com.zhuinden.simplestack.Backstack;
 import com.zhuinden.simplestack.HistoryBuilder;
@@ -28,7 +29,7 @@ public class MainActivity
         ButterKnife.bind(this);
 
         Backstack backstack = Navigator.configure() //
-                .setStateChanger(this) //
+                .setStateChanger(new DefaultStateChanger(this, root, this)) //
                 .setDeferredInitialization(true)
                 .install(this, root, HistoryBuilder.single(FirstKey.create()));
 
@@ -52,7 +53,7 @@ public class MainActivity
             return;
         }
         StateTitleKey stateTitleKey = stateChange.topNewState();
-        setTitle(stateTitleKey.getTitle());
+        setTitle(stateTitleKey.title());
         completionCallback.stateChangeComplete();
     }
 }

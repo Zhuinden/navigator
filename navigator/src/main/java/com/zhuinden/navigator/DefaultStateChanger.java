@@ -1,21 +1,8 @@
-/*
- * Copyright 2017 Gabor Varadi
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.zhuinden.navigator;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,14 +12,13 @@ import com.zhuinden.simplestack.StateChange;
 import com.zhuinden.simplestack.StateChanger;
 
 /**
- * Created by Zhuinden on 2017.03.11..
+ * A default state changer that handles view changes, and allows an optional external state changer (which is executed before the view change).
+ *
+ * To work, all keys must implement {@link StateKey}, which specifies a layout, and a {@link ViewChangeHandler}.
  */
-
-class InternalStateChanger
+public class DefaultStateChanger
         implements StateChanger {
-    private static final NoOpViewChangeHandler NO_OP_VIEW_CHANGE_HANDLER = new NoOpViewChangeHandler();
-
-    static class NoOpStateChanger
+    private static class NoOpStateChanger
             implements StateChanger {
         @Override
         public void handleStateChange(StateChange stateChange, Callback completionCallback) {
@@ -40,18 +26,37 @@ class InternalStateChanger
         }
     }
 
-    private Context baseContext;
-    private StateChanger externalStateChanger;
-    private ViewGroup container;
+    private static final NoOpViewChangeHandler NO_OP_VIEW_CHANGE_HANDLER = new NoOpViewChangeHandler();
 
-    InternalStateChanger(Context baseContext, StateChanger externalStateChanger, ViewGroup container) {
+    private Context baseContext;
+    private ViewGroup container;
+    private StateChanger externalStateChanger;
+
+    public DefaultStateChanger(@NonNull Context baseContext, @NonNull ViewGroup container) {
+        this(baseContext, container, null);
+    }
+
+    public DefaultStateChanger(@NonNull Context baseContext, @NonNull ViewGroup container, @Nullable StateChanger externalStateChanger) {
+        if(baseContext == null) {
+            throw new NullPointerException("baseContext cannot be null");
+        }
+        if(container == null) {
+            throw new NullPointerException("container cannot be null");
+        }
         this.baseContext = baseContext;
-        this.externalStateChanger = externalStateChanger;
         this.container = container;
+        if(externalStateChanger == null) {
+            externalStateChanger = new NoOpStateChanger();
+        }
+        this.externalStateChanger = externalStateChanger;
+    }
+
+    private void finishStateChange(Callback completionCallback) {
+        completionCallback.stateChangeComplete();
     }
 
     @Override
-    public void handleStateChange(final StateChange stateChange, final Callback completionCallback) {
+    public final void handleStateChange(final StateChange stateChange, final Callback completionCallback) {
         externalStateChanger.handleStateChange(stateChange, new Callback() {
             @Override
             public void stateChangeComplete() {
@@ -75,9 +80,9 @@ class InternalStateChanger
                 } else {
                     final ViewChangeHandler viewChangeHandler;
                     if(stateChange.getDirection() == StateChange.FORWARD) {
-                        viewChangeHandler = newKey.getViewChangeHandler();
+                        viewChangeHandler = newKey.viewChangeHandler();
                     } else if(previousKey != null && stateChange.getDirection() == StateChange.BACKWARD) {
-                        viewChangeHandler = previousKey.getViewChangeHandler();
+                        viewChangeHandler = previousKey.viewChangeHandler();
                     } else {
                         viewChangeHandler = NO_OP_VIEW_CHANGE_HANDLER;
                     }
@@ -94,9 +99,5 @@ class InternalStateChanger
                 }
             }
         });
-    }
-
-    private void finishStateChange(Callback completionCallback) {
-        completionCallback.stateChangeComplete();
     }
 }

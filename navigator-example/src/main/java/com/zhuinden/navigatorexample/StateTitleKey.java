@@ -7,6 +7,6 @@ import com.zhuinden.navigator.StateKey;
  */
 
 public abstract class StateTitleKey
-        extends StateKey {
-    public abstract String getTitle();
+        implements StateKey {
+    public abstract String title();
 }

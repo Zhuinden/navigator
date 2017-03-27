@@ -22,7 +22,7 @@ import android.view.ViewGroup;
 import com.zhuinden.navigator.ViewChangeHandler;
 
 /**
- * Created by Zhuinden on 2017.03.11..
+ * A view swap with no animation.
  */
 public final class NoOpViewChangeHandler
         implements ViewChangeHandler {

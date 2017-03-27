@@ -1,6 +1,7 @@
 package com.zhuinden.navigatorexample;
 
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.google.auto.value.AutoValue;
 import com.zhuinden.navigator.ViewChangeHandler;
@@ -22,12 +23,13 @@ public abstract class FirstKey
     }
 
     @Override
-    public ViewChangeHandler getViewChangeHandler() {
+    @NonNull
+    public ViewChangeHandler viewChangeHandler() {
         return new TransitionHandler();
     }
 
     @Override
-    public String getTitle() {
+    public String title() {
         return "First";
     }
 }

@@ -20,13 +20,27 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * Created by Zhuinden on 2017.03.11..
+ * An interface that represents the view change when a state change occurs.
+ *
+ * Specified in {@link StateKey}, if {@link DefaultStateChanger} is used.
  */
-
 public interface ViewChangeHandler {
+    /**
+     * It must be called to signal that the view change is complete.
+     */
     interface CompletionCallback {
         void onCompleted();
     }
 
+    /**
+     * Perform the view change. The previous view must be removed from the container, and the new view must be added to the container.
+     * When complete, the completion callback must be called.
+     *
+     * @param container          the container for the views
+     * @param previousView       the previous view
+     * @param newView            the new view
+     * @param direction          the direction (from the StateChange)
+     * @param completionCallback the callback that must be called when the view change is complete.
+     */
     void performViewChange(@NonNull final ViewGroup container, @NonNull final View previousView, @NonNull final View newView, final int direction, @NonNull final CompletionCallback completionCallback);
 }

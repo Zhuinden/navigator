@@ -22,7 +22,7 @@ import android.support.annotation.NonNull;
 import android.view.View;
 
 /**
- * Created by Zhuinden on 2017.03.11..
+ * A default segue animation.
  */
 public final class SegueViewChangeHandler
         extends AnimatorViewChangeHandler {

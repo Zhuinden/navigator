@@ -16,18 +16,17 @@
 package com.zhuinden.navigator;
 
 import android.support.annotation.LayoutRes;
-
-import com.zhuinden.navigator.changehandlers.SegueViewChangeHandler;
+import android.support.annotation.NonNull;
 
 /**
- * Created by Zhuinden on 2017.03.11..
+ * This must be implemented to represent state using {@link DefaultStateChanger}.
+ *
+ * It is assumed that equals() and hashCode() is properly implemented.
  */
-
-public abstract class StateKey {
+public interface StateKey {
     @LayoutRes
-    public abstract int layout();
+    int layout();
 
-    public ViewChangeHandler getViewChangeHandler() {
-        return new SegueViewChangeHandler();
-    }
+    @NonNull
+    ViewChangeHandler viewChangeHandler();
 }
