@@ -67,7 +67,7 @@ public class MainActivity
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         backstack = Navigator.configure()
-                .setStateChanger(new DefaultStateChanger(this, root, this))
+                .setStateChanger(DefaultStateChanger.configure().setExternalStateChanger(this).create(this, root))
                 .setStateClearStrategy(new PreserveTreeScopesStrategy(serviceTree))
                 .install(this, root, HistoryBuilder.single(MainKey.create()));
     }

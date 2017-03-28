@@ -65,7 +65,9 @@ public class AnotherView
         super.onFinishInflate();
         ButterKnife.bind(this);
         backstackManager = ServiceLocator.getService(getContext(), Key.NESTED_STACK);
-        backstackManager.setStateChanger(new DefaultStateChanger(getContext(), nestedContainer, this));
+        backstackManager.setStateChanger(DefaultStateChanger.configure()
+                .setExternalStateChanger(this)
+                .create(getContext(), nestedContainer));
     }
 
     @Override

@@ -101,4 +101,8 @@ public final class BackstackHost
     public Backstack getBackstack() {
         return backstackManager.getBackstack();
     }
+
+    public BackstackManager getBackstackManager() {
+        return backstackManager;
+    }
 }

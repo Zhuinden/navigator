@@ -22,6 +22,7 @@ import com.zhuinden.statebundle.StateBundle;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
 /**
  * Created by Owner on 2017. 01. 12..
  */
@@ -70,7 +71,9 @@ public class CloudSyncView
         super.onFinishInflate();
         ButterKnife.bind(this);
         backstackManager = ServiceLocator.getService(getContext(), Key.NESTED_STACK);
-        backstackManager.setStateChanger(new DefaultStateChanger(getContext(), nestedContainer, this));
+        backstackManager.setStateChanger(DefaultStateChanger.configure()
+                .setExternalStateChanger(this)
+                .create(getContext(), nestedContainer));
     }
 
     @Override

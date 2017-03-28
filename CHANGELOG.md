@@ -1,8 +1,11 @@
 # Change log
 
-Navigator 0.3.3 (2017-03-28)
+Navigator 1.0.0 (2017-03-28)
 ---------------------------------
-- Update: `navigator-example-nestedstack` now relies on service-tree for back navigation, instead of handling this through the view hierarchy
+- Breaking change: `DefaultStateChanger`'s constructors are replaced by `create()` and `configure()` methods.
+- ENHANCEMENT: `nestedstack` example's `ServiceManager` now handles all back presses globally according to current active scope.
+- ENHANCEMENT: `mvp` example uses custom viewgroups to support `CREATE -> RESTORE -> ATTACH TO WINDOW` lifecycle, removed `coordinators`.
+- Updated `simple-stack` to 1.4.4.
 
 Navigator 0.3.2 (2017-03-27)
 ---------------------------------
@@ -11,17 +14,18 @@ Navigator 0.3.2 (2017-03-27)
 Navigator 0.3.1 (2017-03-27)
 ---------------------------------
 - Added `ViewChangeCompletionListener` to `DefaultStateChanger` in case it's important to know when the view change has been completed.
-- Ported over `simple-stack-example-mvp` and `simple-stack-example-nestedstack` to use Navigator
+- Ported over `simple-stack-example-mvp` and `simple-stack-example-nestedstack` to use Navigator.
 
 Navigator 0.3.0 (2017-03-27)
 ---------------------------------
 - Breaking change: `StateKey` is now an interface, `getViewChangeHandler()` => `viewChangeHandler()`
-- Breaking change: `Navigator` sets up a `DefaultStateChanger` (which is the old `InternalStateChanger` which is now public
+- Breaking change: `Navigator` sets up a `DefaultStateChanger` (which is the old `InternalStateChanger` which is now public)
 If Navigator is configured with a different state changer, then that state changer is used entirely.
 Navigator is primarily used as a means of replacing BackstackDelegate, but configurable to avoid its default behaviors.
 To obtain the behavior of previous InternalStateChanger, then `new DefaultStateChanger(context, container, externalStateChanger)` should be set.
 - Add: Javadocs.
 - Add: `DefaultStateChanger(Context, ViewGroup)` can be used with `ViewChangeHandler` to manage the navigation between views.
+- Add: `DefaultStateChanger(Context, ViewGroup, StateChanger)` which can be used to run the state change through before the actual view change happens.
 
 Navigator 0.2.2 (2017-03-26)
 ---------------------------------
@@ -34,7 +38,7 @@ Navigator 0.2.1 (2017-03-25)
 
 Navigator 0.2.0 (2017-03-25)
 ---------------------------------
-- Breaking change: Killed ViewControllers entirely, Navigator's internal state changer relies on custom viewgroups instead.
+- Breaking change: **Killed ViewControllers entirely**, Navigator's internal state changer relies on custom viewgroups instead.
 
 Navigator 0.1.6 (2017-03-20)
 ---------------------------------

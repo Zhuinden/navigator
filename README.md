@@ -1,8 +1,12 @@
-# Navigator [BETA]
+# Navigator
 
 A wrapper around [**simple-stack**](https://github.com/Zhuinden/simple-stack) to simplify navigation.
 
 It uses retained fragment as lifecycle listener instead of the `BackstackDelegate`, therefore Min SDK 11+ is required.
+
+Also provides a `DefaultStateChanger` which can be created with `create()`, or configured with `configure()`.
+
+If `DefaultStateChanger` is used, then your keys must implement the `StateKey` interface.
 
 ## Usage
 
@@ -141,7 +145,7 @@ In order to use Navigator, you need to add jitpack to your project root gradle:
 
 and add the compile dependency to your module level gradle.
 
-    compile 'com.github.Zhuinden:navigator:0.3.2'
+    compile 'com.github.Zhuinden:navigator:1.0.0'
 
 ## License
 

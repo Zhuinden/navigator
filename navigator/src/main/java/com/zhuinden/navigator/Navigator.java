@@ -41,6 +41,9 @@ import java.util.List;
  * It can be either configured via {@link Navigator#configure()}, or installed with default settings using {@link Navigator#install(Activity, ViewGroup, List)}.
  */
 public class Navigator {
+    private Navigator() {
+    }
+
     /**
      * A configurer for {@link Navigator}.
      */
@@ -116,13 +119,10 @@ public class Navigator {
          */
         public Backstack install(@NonNull Activity activity, @NonNull ViewGroup container, @NonNull List<Object> initialKeys) {
             if(stateChanger == null) {
-                stateChanger = new DefaultStateChanger(activity, container);
+                stateChanger = DefaultStateChanger.create(activity, container);
             }
             return Navigator.install(this, activity, container, initialKeys);
         }
-    }
-
-    private Navigator() {
     }
 
     /**
@@ -204,6 +204,17 @@ public class Navigator {
     }
 
     /**
+     * A method to return the backstack manager, managed by the {@link BackstackHost}.
+     * Typically not needed.
+     *
+     * @return the managed backstack manager that belongs to the {@link BackstackHost} inside the activity.
+     */
+    public static BackstackManager getManager(Context context) {
+        BackstackHost backstackHost = getBackstackHost(context);
+        return backstackHost.getBackstackManager();
+    }
+
+    /**
      * Persists the view hierarchy state and optional StateBundle.
      *
      * @param view the view (can be Bundleable)
@@ -212,7 +223,7 @@ public class Navigator {
         if(view != null) {
             Context context = view.getContext();
             BackstackHost backstackHost = getBackstackHost(context);
-            backstackHost.backstackManager.persistViewToState(view);
+            backstackHost.getBackstackManager().persistViewToState(view);
         }
     }
 
@@ -227,7 +238,7 @@ public class Navigator {
         }
         Context context = view.getContext();
         BackstackHost backstackHost = getBackstackHost(context);
-        backstackHost.backstackManager.restoreViewFromState(view);
+        backstackHost.getBackstackManager().restoreViewFromState(view);
     }
 
     /**
@@ -245,7 +256,7 @@ public class Navigator {
             throw new NullPointerException("key cannot be null");
         }
         BackstackHost backstackHost = getBackstackHost(context);
-        return backstackHost.backstackManager.getSavedState(key);
+        return backstackHost.getBackstackManager().getSavedState(key);
     }
 
     private static BackstackHost findBackstackHost(Activity activity) {

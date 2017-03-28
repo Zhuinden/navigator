@@ -76,7 +76,10 @@ public class MainActivity
 
         Backstack backstack = Navigator.configure()
                 .setDeferredInitialization(true)
-                .setStateChanger(new DefaultStateChanger(this, root, this, this))
+                .setStateChanger(DefaultStateChanger.configure()
+                        .setExternalStateChanger(this)
+                        .setViewChangeCompletionListener(this)
+                        .create(this, root))
                 .install(this, root, HistoryBuilder.single(TasksKey.create()));
         backstackHolder.setBackstack(backstack);
 

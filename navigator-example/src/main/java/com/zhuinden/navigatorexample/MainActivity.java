@@ -29,7 +29,7 @@ public class MainActivity
         ButterKnife.bind(this);
 
         Backstack backstack = Navigator.configure() //
-                .setStateChanger(new DefaultStateChanger(this, root, this)) //
+                .setStateChanger(DefaultStateChanger.configure().setExternalStateChanger(this).create(this, root)) //
                 .setDeferredInitialization(true)
                 .install(this, root, HistoryBuilder.single(FirstKey.create()));
 

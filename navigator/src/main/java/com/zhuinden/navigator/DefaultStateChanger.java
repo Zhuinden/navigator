@@ -31,7 +31,7 @@ import com.zhuinden.simplestack.StateChanger;
  *
  * To work, all keys must implement {@link StateKey}, which specifies a layout, and a {@link ViewChangeHandler}.
  */
-public class DefaultStateChanger
+public final class DefaultStateChanger
         implements StateChanger {
     private static class NoOpStateChanger
             implements StateChanger {
@@ -78,15 +78,87 @@ public class DefaultStateChanger
     private StateChanger externalStateChanger;
     private ViewChangeCompletionListener viewChangeCompletionListener;
 
-    public DefaultStateChanger(@NonNull Context baseContext, @NonNull ViewGroup container) {
+    /**
+     * Used to configure the instance of the {@link DefaultStateChanger}.
+     *
+     * Allows setting an external state changer, which is executed before the view change.
+     * Also allows setting a {@link ViewChangeCompletionListener} which is executed after the view change.
+     */
+    public static class Configurer {
+        StateChanger externalStateChanger = null;
+        ViewChangeCompletionListener viewChangeCompletionListener = null;
+
+        private Configurer() {
+        }
+
+        /**
+         * Sets the external state changer. It is executed before the view change.
+         *
+         * @param stateChanger the state changer
+         * @return the configurer
+         */
+        public Configurer setExternalStateChanger(@NonNull StateChanger stateChanger) {
+            if(stateChanger == null) {
+                throw new NullPointerException("If set, external state changer cannot be null!");
+            }
+            this.externalStateChanger = stateChanger;
+            return this;
+        }
+
+        /**
+         * Sets the {@link ViewChangeCompletionListener}. It is executed after the view change.
+         *
+         * @param viewChangeCompletionListener the view change completion listener
+         * @return the configurer
+         */
+        public Configurer setViewChangeCompletionListener(@NonNull ViewChangeCompletionListener viewChangeCompletionListener) {
+            if(viewChangeCompletionListener == null) {
+                throw new NullPointerException("If set, view change completion listener cannot be null!");
+            }
+            this.viewChangeCompletionListener = viewChangeCompletionListener;
+            return this;
+        }
+
+        /**
+         * Creates the {@link DefaultStateChanger} with the specified parameters.
+         *
+         * @param baseContext the base context used to inflate the views
+         * @param container   the container into which views are added and removed from
+         * @return the new {@link DefaultStateChanger}
+         */
+        public DefaultStateChanger create(Context baseContext, ViewGroup container) {
+            return new DefaultStateChanger(baseContext, container, externalStateChanger, viewChangeCompletionListener);
+        }
+    }
+
+    /**
+     * Factory method to create a configured {@link DefaultStateChanger}.
+     * You can set an external state changer which is executed before the view change, and a {@link ViewChangeCompletionListener} that is executed after view change.
+     *
+     * @return the {@link Configurer}
+     */
+    public static Configurer configure() {
+        return new Configurer();
+    }
+
+    /**
+     * Factory method to create the {@link DefaultStateChanger} with default configuration.
+     *
+     * To add additional configuration such as external state changer or {@link ViewChangeCompletionListener}, use the {@link DefaultStateChanger#configure()} method.
+     *
+     * @param baseContext the base context used to inflate views
+     * @param container   the container into which views are added to or removed from
+     * @return the state changer
+     */
+    public static DefaultStateChanger create(Context baseContext, ViewGroup container) {
+        return new DefaultStateChanger(baseContext, container);
+    }
+
+    DefaultStateChanger(@NonNull Context baseContext, @NonNull ViewGroup container) {
         this(baseContext, container, null, null);
     }
 
-    public DefaultStateChanger(@NonNull Context baseContext, @NonNull ViewGroup container, @Nullable StateChanger externalStateChanger) {
-        this(baseContext, container, externalStateChanger, null);
-    }
-
-    public DefaultStateChanger(@NonNull Context baseContext, @NonNull ViewGroup container, @Nullable StateChanger externalStateChanger, @Nullable ViewChangeCompletionListener viewChangeCompletionListener) {
+    DefaultStateChanger(@NonNull Context baseContext, @NonNull ViewGroup container, @Nullable StateChanger externalStateChanger, @Nullable ViewChangeCompletionListener viewChangeCompletionListener) {
         if(baseContext == null) {
             throw new NullPointerException("baseContext cannot be null");
         }
