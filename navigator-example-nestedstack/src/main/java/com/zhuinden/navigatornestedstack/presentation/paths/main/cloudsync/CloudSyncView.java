@@ -5,23 +5,20 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import com.zhuinden.navigator.DefaultStateChanger;
-import com.zhuinden.simplestack.Backstack;
-import com.zhuinden.simplestack.BackstackManager;
-import com.zhuinden.simplestack.Bundleable;
-import com.zhuinden.simplestack.KeyContextWrapper;
-import com.zhuinden.simplestack.StateChange;
-import com.zhuinden.simplestack.StateChanger;
 import com.zhuinden.navigatornestedstack.R;
 import com.zhuinden.navigatornestedstack.application.Key;
 import com.zhuinden.navigatornestedstack.util.BackPressListener;
 import com.zhuinden.navigatornestedstack.util.NestSupportServiceManager;
 import com.zhuinden.navigatornestedstack.util.ServiceLocator;
+import com.zhuinden.simplestack.Backstack;
+import com.zhuinden.simplestack.BackstackManager;
+import com.zhuinden.simplestack.Bundleable;
+import com.zhuinden.simplestack.StateChange;
+import com.zhuinden.simplestack.StateChanger;
 import com.zhuinden.statebundle.StateBundle;
 
 import butterknife.BindView;
@@ -74,7 +71,9 @@ public class CloudSyncView
         super.onFinishInflate();
         ButterKnife.bind(this);
         backstackManager = ServiceLocator.getService(getContext(), Key.NESTED_STACK);
-        backstackManager.setStateChanger(new DefaultStateChanger(getContext(), nestedContainer, this));
+        backstackManager.setStateChanger(DefaultStateChanger.configure()
+                .setExternalStateChanger(this)
+                .create(getContext(), nestedContainer));
     }
 
     @Override

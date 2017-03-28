@@ -1,15 +1,14 @@
 package com.zhuinden.navigatornestedstack.application;
 
-import android.content.Context;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import com.zhuinden.navigator.StateKey;
 import com.zhuinden.navigator.ViewChangeHandler;
 import com.zhuinden.navigator.changehandlers.SegueViewChangeHandler;
+import com.zhuinden.navigatornestedstack.util.PreserveTreeScopesStrategy;
 import com.zhuinden.servicetree.ServiceTree;
 import com.zhuinden.simplestack.BackstackManager;
-import com.zhuinden.navigatornestedstack.util.ServiceLocator;
 
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +28,7 @@ public abstract class Key
     public void bindServices(ServiceTree.Node node) {
         if(hasNestedStack()) {
             BackstackManager backstackManager = new BackstackManager();
-            backstackManager.setStateClearStrategy((keyStateMap, stateChange) -> keyStateMap.keySet().retainAll(node.getTree().getKeys()));
+            backstackManager.setStateClearStrategy(new PreserveTreeScopesStrategy(node.getTree()));
             backstackManager.setup(initialKeys());
             node.bindService(NESTED_STACK, backstackManager);
         }

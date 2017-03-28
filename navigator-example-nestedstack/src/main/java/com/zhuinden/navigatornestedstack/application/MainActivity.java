@@ -3,10 +3,8 @@ package com.zhuinden.navigatornestedstack.application;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.FrameLayout;
 
 import com.zhuinden.navigator.DefaultStateChanger;
@@ -16,6 +14,7 @@ import com.zhuinden.navigatornestedstack.presentation.paths.main.MainKey;
 import com.zhuinden.navigatornestedstack.presentation.paths.other.OtherKey;
 import com.zhuinden.navigatornestedstack.util.BackPressListener;
 import com.zhuinden.navigatornestedstack.util.NestSupportServiceManager;
+import com.zhuinden.navigatornestedstack.util.PreserveTreeScopesStrategy;
 import com.zhuinden.navigatornestedstack.util.ServiceLocator;
 import com.zhuinden.servicetree.ServiceTree;
 import com.zhuinden.simplestack.Backstack;
@@ -70,6 +69,7 @@ public class MainActivity
         ButterKnife.bind(this);
         backstack = Navigator.configure()
                 .setStateChanger(new DefaultStateChanger(this, root, this))
+                .setStateClearStrategy(new PreserveTreeScopesStrategy(serviceTree))
                 .install(this, root, HistoryBuilder.single(MainKey.create()));
     }
 
