@@ -12,7 +12,6 @@ import com.zhuinden.navigator.Navigator;
 import com.zhuinden.navigatornestedstack.R;
 import com.zhuinden.navigatornestedstack.presentation.paths.main.MainKey;
 import com.zhuinden.navigatornestedstack.presentation.paths.other.OtherKey;
-import com.zhuinden.navigatornestedstack.util.BackPressListener;
 import com.zhuinden.navigatornestedstack.util.NestSupportServiceManager;
 import com.zhuinden.navigatornestedstack.util.PreserveTreeScopesStrategy;
 import com.zhuinden.navigatornestedstack.util.ServiceLocator;
@@ -80,13 +79,7 @@ public class MainActivity
 
     @Override
     public void onBackPressed() {
-        if(root.getChildAt(0) != null && root.getChildAt(0) instanceof BackPressListener) {
-            boolean handled = ((BackPressListener) root.getChildAt(0)).onBackPressed();
-            if(handled) {
-                return;
-            }
-        }
-        if(!Navigator.onBackPressed(this)) {
+        if(!serviceManager.handleBack(this)) {
             super.onBackPressed();
         }
     }

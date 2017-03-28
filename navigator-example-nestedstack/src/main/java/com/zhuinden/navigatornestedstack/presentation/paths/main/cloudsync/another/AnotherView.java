@@ -9,7 +9,6 @@ import android.widget.RelativeLayout;
 import com.zhuinden.navigator.DefaultStateChanger;
 import com.zhuinden.navigatornestedstack.R;
 import com.zhuinden.navigatornestedstack.application.Key;
-import com.zhuinden.navigatornestedstack.util.BackPressListener;
 import com.zhuinden.navigatornestedstack.util.NestSupportServiceManager;
 import com.zhuinden.navigatornestedstack.util.ServiceLocator;
 import com.zhuinden.simplestack.Backstack;
@@ -26,7 +25,7 @@ import butterknife.ButterKnife;
 
 public class AnotherView
         extends RelativeLayout
-        implements StateChanger, BackPressListener {
+        implements StateChanger {
     public AnotherView(Context context) {
         super(context);
         init(context);
@@ -66,9 +65,7 @@ public class AnotherView
         super.onFinishInflate();
         ButterKnife.bind(this);
         backstackManager = ServiceLocator.getService(getContext(), Key.NESTED_STACK);
-        backstackManager.setStateChanger(DefaultStateChanger.configure()
-                .setExternalStateChanger(this)
-                .create(getContext(), nestedContainer));
+        backstackManager.setStateChanger(new DefaultStateChanger(getContext(), nestedContainer, this));
     }
 
     @Override
@@ -81,17 +78,6 @@ public class AnotherView
     protected void onDetachedFromWindow() {
         backstackManager.detachStateChanger();
         super.onDetachedFromWindow();
-    }
-
-    @Override
-    public boolean onBackPressed() {
-        if(nestedContainer.getChildAt(0) != null && nestedContainer.getChildAt(0) instanceof BackPressListener) {
-            boolean handled = ((BackPressListener) nestedContainer.getChildAt(0)).onBackPressed();
-            if(handled) {
-                return true;
-            }
-        }
-        return backstackManager.getBackstack().goBack();
     }
 
     @Override
