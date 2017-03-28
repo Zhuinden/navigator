@@ -3,14 +3,16 @@ package com.zhuinden.navigatornestedstack.util;
 import android.content.Context;
 import android.util.Log;
 
+import com.zhuinden.navigator.Navigator;
+import com.zhuinden.navigatornestedstack.application.Key;
 import com.zhuinden.servicetree.ServiceTree;
 import com.zhuinden.simplestack.Backstack;
 import com.zhuinden.simplestack.BackstackManager;
 import com.zhuinden.simplestack.Bundleable;
 import com.zhuinden.simplestack.StateChange;
-import com.zhuinden.navigatornestedstack.application.Key;
 import com.zhuinden.statebundle.StateBundle;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class NestSupportServiceManager {
@@ -116,5 +118,33 @@ public class NestSupportServiceManager {
 
     public ServiceTree getServiceTree() {
         return serviceTree;
+    }
+
+    public boolean handleBack(Context context) {
+        ServiceTree serviceTree = ServiceLocator.getService(context, ServiceLocator.SERVICE_TREE);
+        LinkedList<Object> keys = new LinkedList<>(serviceTree.getKeys());
+        Object lastKey = keys.getLast();
+        Backstack backstack = Navigator.getBackstack(context);
+        class Cancellation {
+            private boolean cancelled;
+        }
+        Cancellation cancellation = new Cancellation();
+        serviceTree.traverseChain(serviceTree.getNode(lastKey), (node, cancellationToken) -> {
+            if(node.getParent() == null) {
+                return;
+            }
+            Key key = node.getKey();
+            if(key.hasNestedStack()) {
+                BackstackManager backstackManager = serviceTree.getNode(key).getService(Key.NESTED_STACK);
+                if(backstackManager != null && backstackManager.getBackstack().goBack()) {
+                    cancellation.cancelled = true;
+                    cancellationToken.cancel();
+                }
+            }
+        });
+        if(cancellation.cancelled) {
+            return true;
+        }
+        return backstack.goBack();
     }
 }

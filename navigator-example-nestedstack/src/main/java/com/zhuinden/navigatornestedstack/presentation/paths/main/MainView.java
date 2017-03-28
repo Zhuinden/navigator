@@ -12,21 +12,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RelativeLayout;
 
-import com.zhuinden.simplestack.Backstack;
-import com.zhuinden.simplestack.BackstackManager;
-import com.zhuinden.simplestack.HistoryBuilder;
-import com.zhuinden.simplestack.KeyContextWrapper;
-import com.zhuinden.simplestack.StateChange;
-import com.zhuinden.simplestack.StateChanger;
 import com.zhuinden.navigatornestedstack.R;
 import com.zhuinden.navigatornestedstack.application.Key;
 import com.zhuinden.navigatornestedstack.presentation.paths.main.chromecast.ChromeCastKey;
 import com.zhuinden.navigatornestedstack.presentation.paths.main.cloudsync.CloudSyncKey;
 import com.zhuinden.navigatornestedstack.presentation.paths.main.list.ListKey;
 import com.zhuinden.navigatornestedstack.presentation.paths.main.mail.MailKey;
-import com.zhuinden.navigatornestedstack.util.BackPressListener;
 import com.zhuinden.navigatornestedstack.util.ServiceLocator;
 import com.zhuinden.navigatornestedstack.util.ViewUtils;
+import com.zhuinden.simplestack.Backstack;
+import com.zhuinden.simplestack.BackstackManager;
+import com.zhuinden.simplestack.HistoryBuilder;
+import com.zhuinden.simplestack.KeyContextWrapper;
+import com.zhuinden.simplestack.StateChange;
+import com.zhuinden.simplestack.StateChanger;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,7 +37,7 @@ import it.sephiroth.android.library.bottomnavigation.BottomNavigation;
 
 public class MainView
         extends CoordinatorLayout
-        implements StateChanger, BackPressListener {
+        implements StateChanger {
     @BindView(R.id.root)
     RelativeLayout root;
 
@@ -112,17 +111,6 @@ public class MainView
         });
         backstackManager = ServiceLocator.getService(getContext(), Key.NESTED_STACK);
         backstackManager.setStateChanger(this);
-    }
-
-    @Override
-    public boolean onBackPressed() {
-        if(root.getChildAt(0) != null && root.getChildAt(0) instanceof BackPressListener) {
-            boolean handled = ((BackPressListener) root.getChildAt(0)).onBackPressed();
-            if(handled) {
-                return true;
-            }
-        }
-        return backstackManager.getBackstack().goBack();
     }
 
     private void exchangeViewForKey(Key newKey, int direction) {

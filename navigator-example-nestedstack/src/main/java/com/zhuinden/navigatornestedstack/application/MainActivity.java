@@ -3,10 +3,8 @@ package com.zhuinden.navigatornestedstack.application;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.FrameLayout;
 
 import com.zhuinden.navigator.DefaultStateChanger;
@@ -14,7 +12,6 @@ import com.zhuinden.navigator.Navigator;
 import com.zhuinden.navigatornestedstack.R;
 import com.zhuinden.navigatornestedstack.presentation.paths.main.MainKey;
 import com.zhuinden.navigatornestedstack.presentation.paths.other.OtherKey;
-import com.zhuinden.navigatornestedstack.util.BackPressListener;
 import com.zhuinden.navigatornestedstack.util.NestSupportServiceManager;
 import com.zhuinden.navigatornestedstack.util.ServiceLocator;
 import com.zhuinden.servicetree.ServiceTree;
@@ -80,13 +77,7 @@ public class MainActivity
 
     @Override
     public void onBackPressed() {
-        if(root.getChildAt(0) != null && root.getChildAt(0) instanceof BackPressListener) {
-            boolean handled = ((BackPressListener) root.getChildAt(0)).onBackPressed();
-            if(handled) {
-                return;
-            }
-        }
-        if(!Navigator.onBackPressed(this)) {
+        if(!serviceManager.handleBack(this)) {
             super.onBackPressed();
         }
     }

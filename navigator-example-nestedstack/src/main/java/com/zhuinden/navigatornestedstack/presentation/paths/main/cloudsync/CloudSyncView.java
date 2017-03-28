@@ -5,23 +5,19 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import com.zhuinden.navigator.DefaultStateChanger;
+import com.zhuinden.navigatornestedstack.R;
+import com.zhuinden.navigatornestedstack.application.Key;
+import com.zhuinden.navigatornestedstack.util.NestSupportServiceManager;
+import com.zhuinden.navigatornestedstack.util.ServiceLocator;
 import com.zhuinden.simplestack.Backstack;
 import com.zhuinden.simplestack.BackstackManager;
 import com.zhuinden.simplestack.Bundleable;
-import com.zhuinden.simplestack.KeyContextWrapper;
 import com.zhuinden.simplestack.StateChange;
 import com.zhuinden.simplestack.StateChanger;
-import com.zhuinden.navigatornestedstack.R;
-import com.zhuinden.navigatornestedstack.application.Key;
-import com.zhuinden.navigatornestedstack.util.BackPressListener;
-import com.zhuinden.navigatornestedstack.util.NestSupportServiceManager;
-import com.zhuinden.navigatornestedstack.util.ServiceLocator;
 import com.zhuinden.statebundle.StateBundle;
 
 import butterknife.BindView;
@@ -32,7 +28,7 @@ import butterknife.ButterKnife;
 
 public class CloudSyncView
         extends RelativeLayout
-        implements Bundleable, StateChanger, BackPressListener {
+        implements Bundleable, StateChanger {
     private static final String TAG = "FirstView";
 
     public CloudSyncView(Context context) {
@@ -111,16 +107,5 @@ public class CloudSyncView
     public void handleStateChange(StateChange stateChange, Callback completionCallback) {
         NestSupportServiceManager.get(getContext()).setupServices(stateChange);
         completionCallback.stateChangeComplete();
-    }
-
-    @Override
-    public boolean onBackPressed() {
-        if(nestedContainer.getChildAt(0) != null && nestedContainer.getChildAt(0) instanceof BackPressListener) {
-            boolean handled = ((BackPressListener) nestedContainer.getChildAt(0)).onBackPressed();
-            if(handled) {
-                return true;
-            }
-        }
-        return backstackManager.getBackstack().goBack();
     }
 }

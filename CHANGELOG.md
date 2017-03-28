@@ -1,5 +1,9 @@
 # Change log
 
+Navigator 0.3.3 (2017-03-28)
+---------------------------------
+- Update: `navigator-example-nestedstack` now relies on service-tree for back navigation, instead of handling this through the view hierarchy
+
 Navigator 0.3.2 (2017-03-27)
 ---------------------------------
 - Fix a javadoc error.
