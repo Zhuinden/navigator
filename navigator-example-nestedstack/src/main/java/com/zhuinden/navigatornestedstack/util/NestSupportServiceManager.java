@@ -1,7 +1,6 @@
 package com.zhuinden.navigatornestedstack.util;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.zhuinden.navigator.Navigator;
 import com.zhuinden.navigatornestedstack.application.Key;
@@ -12,7 +11,7 @@ import com.zhuinden.simplestack.Bundleable;
 import com.zhuinden.simplestack.StateChange;
 import com.zhuinden.statebundle.StateBundle;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 public class NestSupportServiceManager {
@@ -24,6 +23,8 @@ public class NestSupportServiceManager {
     }
 
     private final ServiceTree serviceTree;
+
+    private final List<Object> activeKeys = new ArrayList<>();
 
     public NestSupportServiceManager(ServiceTree serviceTree) {
         this.serviceTree = serviceTree;
@@ -48,23 +49,35 @@ public class NestSupportServiceManager {
     }
 
     public void setupServices(StateChange stateChange) {
+        setupServices(stateChange, false);
+    }
+
+    public void setupServices(StateChange stateChange, boolean isFromCompositeKey) {
         StateBundle states = serviceTree.getRootService(SERVICE_STATES);
         for(Object _previousKey : stateChange.getPreviousState()) {
             Key previousKey = (Key) _previousKey;
             if(!stateChange.getNewState().contains(previousKey)) {
-                ServiceTree.Node previousNode = serviceTree.getNode(previousKey);
-                if(states != null) {
-                    serviceTree.traverseSubtree(previousNode, ServiceTree.Walk.POST_ORDER, node -> {
-                        states.remove(node.getKey().toString());
-                        Log.i(TAG, "Destroy [" + node + "]");
-                    });
+                activeKeys.remove(previousKey);
+                if(!isFromCompositeKey) {
+                    ServiceTree.Node previousNode = serviceTree.getNode(previousKey);
+                    if(states != null) {
+                        serviceTree.traverseSubtree(previousNode, ServiceTree.Walk.POST_ORDER, node -> {
+                            states.remove(node.getKey().toString());
+                        });
+                    }
+                    serviceTree.removeNodeAndChildren(previousNode);
                 }
-                serviceTree.removeNodeAndChildren(previousNode);
             }
         }
         for(Object _newKey : stateChange.getNewState()) {
             Key newKey = (Key) _newKey;
-            buildServices(states, newKey);
+            activeKeys.remove(newKey);
+            if(newKey == stateChange.topNewState()) {
+                activeKeys.add(newKey);
+            }
+            if(!isFromCompositeKey) {
+                buildServices(states, newKey);
+            }
         }
     }
 
@@ -122,8 +135,7 @@ public class NestSupportServiceManager {
 
     public boolean handleBack(Context context) {
         ServiceTree serviceTree = ServiceLocator.getService(context, ServiceLocator.SERVICE_TREE);
-        LinkedList<Object> keys = new LinkedList<>(serviceTree.getKeys());
-        Object lastKey = keys.getLast();
+        Object lastKey = activeKeys.get(activeKeys.size() - 1);
         Backstack backstack = Navigator.getBackstack(context);
         class Cancellation {
             private boolean cancelled;

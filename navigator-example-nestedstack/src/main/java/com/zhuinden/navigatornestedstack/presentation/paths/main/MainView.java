@@ -18,6 +18,7 @@ import com.zhuinden.navigatornestedstack.presentation.paths.main.chromecast.Chro
 import com.zhuinden.navigatornestedstack.presentation.paths.main.cloudsync.CloudSyncKey;
 import com.zhuinden.navigatornestedstack.presentation.paths.main.list.ListKey;
 import com.zhuinden.navigatornestedstack.presentation.paths.main.mail.MailKey;
+import com.zhuinden.navigatornestedstack.util.NestSupportServiceManager;
 import com.zhuinden.navigatornestedstack.util.ServiceLocator;
 import com.zhuinden.navigatornestedstack.util.ViewUtils;
 import com.zhuinden.simplestack.Backstack;
@@ -136,7 +137,7 @@ public class MainView
 
     @Override
     public void handleStateChange(StateChange stateChange, Callback completionCallback) {
-        // no need to setup services here, because it is handled by Composite
+        NestSupportServiceManager.get(getContext()).setupServices(stateChange, true);
         if(stateChange.topNewState().equals(stateChange.topPreviousState())) {
             // no-op
             completionCallback.stateChangeComplete();
