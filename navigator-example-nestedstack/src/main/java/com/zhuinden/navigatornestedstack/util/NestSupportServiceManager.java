@@ -36,7 +36,7 @@ public class NestSupportServiceManager {
 
     public StateBundle persistStates() {
         StateBundle serviceStates = new StateBundle();
-        serviceTree.traverseTree(ServiceTree.Walk.PRE_ORDER, node -> {
+        serviceTree.traverseTree(ServiceTree.Walk.PRE_ORDER, (node, cancellationToken) -> {
             StateBundle keyBundle = new StateBundle();
             for(ServiceTree.Node.Entry entry : node.getBoundServices()) {
                 if(entry.getService() instanceof Bundleable) {
@@ -61,7 +61,7 @@ public class NestSupportServiceManager {
                 if(!isFromCompositeKey) {
                     ServiceTree.Node previousNode = serviceTree.getNode(previousKey);
                     if(states != null) {
-                        serviceTree.traverseSubtree(previousNode, ServiceTree.Walk.POST_ORDER, node -> {
+                        serviceTree.traverseSubtree(previousNode, ServiceTree.Walk.POST_ORDER, (node, cancellationToken) -> {
                             states.remove(node.getKey().toString());
                         });
                     }
