@@ -39,6 +39,53 @@ public class MainActivity
 }
 ```
 
+- **StateKey**
+
+``` java
+@AutoValue
+public abstract class FirstKey
+        implements StateKey, Parcelable {
+    public static FirstKey create() {
+        return new AutoValue_FirstKey();
+    }
+
+    @Override
+    public int layout() {
+        return R.layout.path_first;
+    }
+
+    @Override
+    public ViewChangeHandler viewChangeHandler() {
+        return new SegueViewChangeHandler();
+    }
+}
+```
+
+- **Layout XML**
+
+``` xml
+<?xml version="1.0" encoding="utf-8"?>
+<com.zhuinden.navigatorexample.FirstView xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center"
+              android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/first_edittext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Enter text here"/>
+
+    <Button
+        android:id="@+id/first_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Go to second!"/>
+
+</com.zhuinden.navigatorexample.FirstView>
+```
+
 - **Custom Viewgroup**
 
 ``` java
@@ -97,28 +144,6 @@ public class FirstView
         if(bundle != null) {
             Log.i("FIRST", bundle.getString("HELLO"));
         }
-    }
-}
-```
-
-- **StateKey**
-
-``` java
-@AutoValue
-public abstract class FirstKey
-        implements StateKey, Parcelable {
-    public static FirstKey create() {
-        return new AutoValue_FirstKey();
-    }
-
-    @Override
-    public int layout() {
-        return R.layout.path_first;
-    }
-
-    @Override
-    public ViewChangeHandler viewChangeHandler() {
-        return new SegueViewChangeHandler();
     }
 }
 ```
