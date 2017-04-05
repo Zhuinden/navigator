@@ -4,9 +4,9 @@ import android.support.annotation.NonNull;
 
 import com.google.auto.value.AutoValue;
 import com.zhuinden.navigator.ViewChangeHandler;
+import com.zhuinden.navigator.changehandlers.FadeViewChangeHandler;
 import com.zhuinden.navigatornestedstack.R;
 import com.zhuinden.navigatornestedstack.application.Key;
-import com.zhuinden.navigatornestedstack.util.FadeAnimationHandler;
 
 /**
  * Created by Owner on 2017. 02. 27..
@@ -31,6 +31,6 @@ public abstract class OtherKey
     @NonNull
     @Override
     public ViewChangeHandler viewChangeHandler() {
-        return new FadeAnimationHandler();
+        return new FadeViewChangeHandler();
     }
 }

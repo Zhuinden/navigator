@@ -1,5 +1,9 @@
 # Change log
 
+Navigator 1.0.1 (2017-04-05)
+---------------------------------
+- ADDED: `FadeViewChangeHandler` from sample to library as a default `fade` animation.
+
 Navigator 1.0.0 (2017-03-28)
 ---------------------------------
 - Breaking change: `DefaultStateChanger`'s constructors are replaced by `create()` and `configure()` methods.
