@@ -23,11 +23,13 @@ public class NestSupportServiceManager {
     }
 
     private final ServiceTree serviceTree;
+    private final Object rootKey;
 
     private final List<Object> activeKeys = new ArrayList<>();
 
-    public NestSupportServiceManager(ServiceTree serviceTree) {
+    public NestSupportServiceManager(ServiceTree serviceTree, Object rootKey) {
         this.serviceTree = serviceTree;
+        this.rootKey = rootKey;
     }
 
     public static final String SERVICE_STATES = "SERVICE_BUNDLE";
@@ -53,7 +55,7 @@ public class NestSupportServiceManager {
     }
 
     public void setupServices(StateChange stateChange, boolean isFromCompositeKey) {
-        StateBundle states = serviceTree.getRootService(SERVICE_STATES);
+        StateBundle states = serviceTree.getNode(rootKey).getService(SERVICE_STATES);
         for(Object _previousKey : stateChange.getPreviousState()) {
             Key previousKey = (Key) _previousKey;
             if(!stateChange.getNewState().contains(previousKey)) {
@@ -83,12 +85,8 @@ public class NestSupportServiceManager {
 
     private void buildServices(StateBundle states, Key newKey) {
         if(!serviceTree.hasNodeWithKey(newKey)) {
-            ServiceTree.Node node;
-            if(newKey instanceof Child) {
-                node = serviceTree.createChildNode(serviceTree.getNode(((Child) newKey).parent()), newKey);
-            } else {
-                node = serviceTree.createRootNode(newKey);
-            }
+            ServiceTree.Node node = serviceTree.createChildNode(serviceTree.getNode(newKey instanceof Child ? ((Child) newKey).parent() : rootKey),
+                    newKey);
             buildServicesForKey(states, newKey, node);
         }
     }
@@ -126,7 +124,7 @@ public class NestSupportServiceManager {
     }
 
     public void setRestoredStates(StateBundle states) {
-        serviceTree.registerRootService(SERVICE_STATES, states);
+        serviceTree.getNode(rootKey).bindService(SERVICE_STATES, states);
     }
 
     public ServiceTree getServiceTree() {
@@ -145,12 +143,15 @@ public class NestSupportServiceManager {
             if(node.getParent() == null) {
                 return;
             }
-            Key key = node.getKey();
-            if(key.hasNestedStack()) {
-                BackstackManager backstackManager = serviceTree.getNode(key).getService(Key.NESTED_STACK);
-                if(backstackManager != null && backstackManager.getBackstack().goBack()) {
-                    cancellation.cancelled = true;
-                    cancellationToken.cancel();
+            Object _key = node.getKey();
+            if(_key instanceof Key) { // ROOT is defined by Activity's TAG
+                Key key = (Key) _key;
+                if(key.hasNestedStack()) {
+                    BackstackManager backstackManager = serviceTree.getNode(key).getService(Key.NESTED_STACK);
+                    if(backstackManager.getBackstack().goBack()) {
+                        cancellation.cancelled = true;
+                        cancellationToken.cancel();
+                    }
                 }
             }
         });

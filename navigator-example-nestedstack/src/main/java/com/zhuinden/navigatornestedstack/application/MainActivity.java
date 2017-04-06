@@ -20,6 +20,7 @@ import com.zhuinden.simplestack.Backstack;
 import com.zhuinden.simplestack.HistoryBuilder;
 import com.zhuinden.simplestack.StateChange;
 import com.zhuinden.simplestack.StateChanger;
+import com.zhuinden.statebundle.StateBundle;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,10 +59,9 @@ public class MainActivity
             serviceTree = serviceManager.getServiceTree();
         } else {
             serviceTree = new ServiceTree();
-            serviceManager = new NestSupportServiceManager(serviceTree);
-            if(savedInstanceState != null) {
-                serviceManager.setRestoredStates(savedInstanceState.getParcelable("SERVICE_BUNDLE"));
-            }
+            serviceTree.createRootNode(TAG);
+            serviceManager = new NestSupportServiceManager(serviceTree, TAG);
+            serviceManager.setRestoredStates(savedInstanceState != null ? savedInstanceState.getParcelable("SERVICE_BUNDLE") : new StateBundle());
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
