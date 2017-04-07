@@ -144,7 +144,7 @@ public class Navigator {
      * @param initialKeys the keys used to initialize the backstack
      */
     public static void install(@NonNull Activity activity, @NonNull ViewGroup container, @NonNull List<Object> initialKeys) {
-        install(configure(), activity, container, initialKeys);
+        configure().install(activity, container, initialKeys);
     }
 
     private static Backstack install(Installer installer, @NonNull Activity activity, @NonNull ViewGroup container, @NonNull List<Object> initialKeys) {

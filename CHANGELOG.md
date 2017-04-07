@@ -1,5 +1,9 @@
 # Change log
 
+Navigator 1.0.2 (2017-04-07)
+---------------------------------
+- FIXED: `Navigator.install()` without a `configure()` call did not create `DefaultStateChanger`.
+
 Navigator 1.0.1 (2017-04-05)
 ---------------------------------
 - ADDED: `FadeViewChangeHandler` from sample to library as a default `fade` animation.
